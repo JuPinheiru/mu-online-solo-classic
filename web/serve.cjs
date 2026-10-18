@@ -2,9 +2,39 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const zlib = require('zlib');
 
 const PORT = 8088;
 const WEB_DIR = __dirname;
+
+// In-memory cache for compressed static assets (matches CDN/GitHub Pages gzip behavior)
+const gzipCache = new Map();
+
+function getGzipBuffer(filePath) {
+    if (gzipCache.has(filePath)) {
+        return gzipCache.get(filePath);
+    }
+    try {
+        const raw = fs.readFileSync(filePath);
+        const compressed = zlib.gzipSync(raw, { level: 6 });
+        gzipCache.set(filePath, compressed);
+        return compressed;
+    } catch (e) {
+        return null;
+    }
+}
+
+// Background pre-compression of shell_login.data so local startup has 0 latency
+setImmediate(() => {
+    const dataPath = path.join(WEB_DIR, 'shell_login.data');
+    if (fs.existsSync(dataPath)) {
+        console.log('  [GZIP] Pre-compressing shell_login.data in background...');
+        const gz = getGzipBuffer(dataPath);
+        if (gz) {
+            console.log(`  [GZIP] Ready: ${(gz.length / (1024 * 1024)).toFixed(1)} MB (CDN gzip simulation)`);
+        }
+    }
+});
 
 const MIME_TYPES = {
     '.html': 'text/html; charset=utf-8',
@@ -51,17 +81,37 @@ const server = http.createServer((req, res) => {
                     res.end('404 Not Found (Directory has no index.html)');
                     return;
                 }
-                serveFileStream(filePath, subStats, res, isHead);
+                serveFileStream(filePath, subStats, res, isHead, req);
             });
         }
 
-        serveFileStream(filePath, stats, res, isHead);
+        serveFileStream(filePath, stats, res, isHead, req);
     });
 });
 
-function serveFileStream(filePath, stats, res, isHead) {
+function serveFileStream(filePath, stats, res, isHead, req) {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+    const acceptGzip = (req && req.headers && req.headers['accept-encoding'] || '').includes('gzip');
+
+    // Compress large assets (.data, .wasm, .js) with gzip if client supports it
+    if (acceptGzip && (ext === '.data' || ext === '.wasm' || ext === '.js') && stats.size > 2048) {
+        const gzBuffer = getGzipBuffer(filePath);
+        if (gzBuffer) {
+            res.writeHead(200, {
+                'Content-Type': contentType,
+                'Content-Encoding': 'gzip',
+                'Content-Length': gzBuffer.length,
+                'Cache-Control': 'no-cache'
+            });
+            if (isHead) {
+                res.end();
+                return;
+            }
+            res.end(gzBuffer);
+            return;
+        }
+    }
 
     res.writeHead(200, {
         'Content-Type': contentType,

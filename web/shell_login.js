@@ -117,7 +117,9 @@ var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIR
 
         const chunks = [];
         const headers = response.headers;
-        const total = Number(headers.get('Content-Length') || packageSize);
+        const contentLength = Number(headers.get('Content-Length')) || 0;
+        const total = contentLength > 0 ? contentLength : (Number(packageSize) || 0);
+        const uncompressedTotal = Number(packageSize) || total || 1;
         let loaded = 0;
 
         Module['setStatus'] && Module['setStatus']('Downloading data...');
@@ -125,10 +127,23 @@ var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIR
 
         while (1) {
           var {done, value} = await reader.read();
-          if (done) break;
+          if (done) {
+            Module['dataFileDownloads'][packageName] = {loaded: total, total};
+            let totalLoaded = 0;
+            let totalSize = 0;
+            for (const download of Object.values(Module['dataFileDownloads'])) {
+              totalLoaded += download.loaded;
+              totalSize += download.total;
+            }
+            Module['setStatus'] && Module['setStatus'](`Downloading data... (${totalLoaded}/${totalSize})`);
+            break;
+          }
           chunks.push(value);
           loaded += value.length;
-          Module['dataFileDownloads'][packageName] = {loaded, total};
+          const wireLoaded = total === uncompressedTotal
+            ? loaded
+            : Math.min(total, Math.round(loaded * (total / uncompressedTotal)));
+          Module['dataFileDownloads'][packageName] = {loaded: wireLoaded, total};
 
           let totalLoaded = 0;
           let totalSize = 0;

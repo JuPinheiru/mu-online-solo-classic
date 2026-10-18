@@ -53,7 +53,7 @@ if errorlevel 1 (
 )
 echo LINK_OK
 
-powershell -NoProfile -File "%CLIENT_DIR%\patch-login-page.ps1" -Token login100
+powershell -NoProfile -File "%CLIENT_DIR%\patch-login-page.ps1" -Token login101
 if errorlevel 1 (
   echo PATCH_FAIL
   exit /b 1

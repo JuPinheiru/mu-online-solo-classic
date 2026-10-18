@@ -130,7 +130,11 @@
     var p = Math.max(2, Math.min(100, percent));
     barFill.style.width = p + '%';
     if (msg && statusMsg) statusMsg.textContent = msg;
-    if (detail && statusDetail) statusDetail.textContent = detail;
+    if (detail && statusDetail) {
+      statusDetail.textContent = detail.replace(/\((\d{3,})%\)/, function (_, num) {
+        return '(' + Math.min(100, parseInt(num, 10)) + '%)';
+      });
+    }
   }
 
   function finishPreloader() {

@@ -885,7 +885,10 @@ var Module = {
     if (m) {
       var current = parseInt(m[2]);
       var total = parseInt(m[4]);
-      var pct = Math.round((current / total) * 100);
+      if (total > 0 && current > total) {
+        total = current;
+      }
+      var pct = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
       var curMb = (current / (1024 * 1024)).toFixed(1);
       var totMb = (total / (1024 * 1024)).toFixed(1);
       if (window.setPreloaderProgress) {
@@ -903,7 +906,7 @@ var Module = {
       }
     }
   },
-  locateFile: function (path) { return path + '?t=login100'; },
+  locateFile: function (path) { return path + '?t=login101'; },
   preRun: [function () {
     var orig = FS.lookupPath;
     function child(node, name) {

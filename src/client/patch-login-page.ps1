@@ -265,6 +265,64 @@ Replace-Once $js @"
     };
 "@
 
+Replace-Once $js @"
+        const chunks = [];
+        const headers = response.headers;
+        const total = Number(headers.get('Content-Length') || packageSize);
+        let loaded = 0;
+
+        Module['setStatus'] && Module['setStatus']('Downloading data...');
+        const reader = response.body.getReader();
+
+        while (1) {
+          var {done, value} = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          loaded += value.length;
+          Module['dataFileDownloads'][packageName] = {loaded, total};
+"@ @"
+        const chunks = [];
+        const headers = response.headers;
+        const contentLength = Number(headers.get('Content-Length')) || 0;
+        const total = contentLength > 0 ? contentLength : (Number(packageSize) || 0);
+        const uncompressedTotal = Number(packageSize) || total || 1;
+        let loaded = 0;
+
+        Module['setStatus'] && Module['setStatus']('Downloading data...');
+        const reader = response.body.getReader();
+
+        while (1) {
+          var {done, value} = await reader.read();
+          if (done) {
+            Module['dataFileDownloads'][packageName] = {loaded: total, total};
+            let totalLoaded = 0;
+            let totalSize = 0;
+            for (const download of Object.values(Module['dataFileDownloads'])) {
+              totalLoaded += download.loaded;
+              totalSize += download.total;
+            }
+            Module['setStatus'] && Module['setStatus'](`Downloading data... (${totalLoaded}/${totalSize})`);
+            break;
+          }
+          chunks.push(value);
+          loaded += value.length;
+          const wireLoaded = total === uncompressedTotal
+            ? loaded
+            : Math.min(total, Math.round(loaded * (total / uncompressedTotal)));
+          Module['dataFileDownloads'][packageName] = {loaded: wireLoaded, total};
+
+          let totalLoaded = 0;
+          let totalSize = 0;
+
+          for (const download of Object.values(Module['dataFileDownloads'])) {
+            totalLoaded += download.loaded;
+            totalSize += download.total;
+          }
+
+          Module['setStatus'] && Module['setStatus'](`Downloading data... (${totalLoaded}/${totalSize})`);
+        }
+"@
+
 Replace-Once $html "      canvas { background: #000; display: block; margin-top: 8px; }" @"
       html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: hidden; cursor: default; }
       #status, #log { display: none; }
