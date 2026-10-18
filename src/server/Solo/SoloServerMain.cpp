@@ -15,6 +15,7 @@
 #include "MonsterManager.h"
 #include "SoloDifficulty.h"
 #include "PacketManager.h"
+#include "DSProtocol.h"
 
 static bool g_SoloServerInitialized = false;
 
@@ -239,6 +240,27 @@ SOLO_API void SoloServer_SetSendCallback(void (*callback)(const uint8_t* data, i
 SOLO_API void SoloServer_SetSaveCallback(void (*callback)())
 {
 	SoloDataServer_SetSaveEventCallback(callback);
+}
+
+SOLO_API int SoloServer_SaveAll()
+{
+	if (!g_SoloServerInitialized)
+	{
+		return 0;
+	}
+
+	int savedCount = 0;
+	for (int n = OBJECT_START_USER; n < MAX_OBJECT; ++n)
+	{
+		if (gObjIsConnectedGP(n) != 0 && gObj[n].Type == OBJECT_USER)
+		{
+			gObjFixInventoryPointer(n);
+			GDCharacterInfoSaveSend(n);
+			savedCount++;
+		}
+	}
+	LogAdd(LOG_BLUE, "[SoloServer] SoloServer_SaveAll completed: %d active player(s) flushed to disk", savedCount);
+	return savedCount;
 }
 
 SOLO_API int SoloServer_GetPlayerCount()

@@ -6,6 +6,7 @@
 [![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white)](https://isocpp.org/)
 [![Emscripten](https://img.shields.io/badge/Emscripten-3.x-red)](https://emscripten.org/)
 [![Status](https://img.shields.io/badge/Server-100%25%20Client--Side-brightgreen)](https://github.com/andvolodko/mu-online-solo-classic)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
 > 🎮 **Play Live in Browser:** **[https://andvolodko.github.io/mu-online-solo-classic/](https://andvolodko.github.io/mu-online-solo-classic/)**
 >
@@ -313,4 +314,4 @@ Special thanks and sincere gratitude to the open-source projects and authors who
 - **Webzen**:
   Original creators of **MU Online** (2001–2003). All game lore, audio, 3D assets, and visual designs remain the intellectual property of Webzen.
 
-Ported, refactored, and architected for WebAssembly, WebGL2, and zero-network single-player browser gameplay by **Andriy Volodko**. Released strictly for educational, archival, and non-commercial research purposes.
+Ported, refactored, and architected for WebAssembly, WebGL2, and zero-network single-player browser gameplay by **Andriy Volodko**. Released strictly for educational, archival, and non-commercial research purposes under the [MIT License](LICENSE.md).

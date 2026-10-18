@@ -477,7 +477,11 @@ void SoloDataServer_ProcessPacket(BYTE* lpMsg, int size)
 							}
 						}
 						SaveAccountData(accData);
-						if (g_SoloSaveEventCallback) g_SoloSaveEventCallback();
+					}
+
+					if (g_SoloSaveEventCallback)
+					{
+						g_SoloSaveEventCallback();
 					}
 					break;
 				}

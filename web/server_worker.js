@@ -291,16 +291,20 @@ async function initServer(initialSaves = null, difficulty = 0) {
         Module._SoloServer_SetSendCallback(sendCallback);
 
         // Register save event callback (Server -> Local Storage auto-save)
+        let autoSaveTimer = null;
         const saveCallback = Module.addFunction(() => {
-            exportEncryptedSaves().then(currentSaves => {
-                if (currentSaves) {
-                    self.postMessage({
-                        type: 'AUTO_SAVE_DATA',
-                        saves: currentSaves,
-                        timestamp: Date.now()
-                    });
-                }
-            });
+            if (autoSaveTimer) clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                exportEncryptedSaves().then(currentSaves => {
+                    if (currentSaves) {
+                        self.postMessage({
+                            type: 'AUTO_SAVE_DATA',
+                            saves: currentSaves,
+                            timestamp: Date.now()
+                        });
+                    }
+                });
+            }, 250);
         }, 'v');
 
         Module._SoloServer_SetSaveCallback(saveCallback);
@@ -419,6 +423,10 @@ self.onmessage = async function (e) {
         }
 
         case 'EXPORT_SAVES': {
+            if (Module && typeof Module._SoloServer_SaveAll === 'function') {
+                const flushed = Module._SoloServer_SaveAll();
+                log(`[Worker] Flushed in-game state for ${flushed} active player(s) before export`, '#34d399');
+            }
             const saves = await exportEncryptedSaves();
             self.postMessage({
                 type: 'SAVES_EXPORTED',
@@ -431,6 +439,10 @@ self.onmessage = async function (e) {
         }
 
         case 'SAVE_NOW': {
+            if (Module && typeof Module._SoloServer_SaveAll === 'function') {
+                const flushed = Module._SoloServer_SaveAll();
+                log(`[Worker] Flushed in-game state for ${flushed} active player(s) before save`, '#34d399');
+            }
             const saves = await exportEncryptedSaves();
             if (saves) {
                 self.postMessage({

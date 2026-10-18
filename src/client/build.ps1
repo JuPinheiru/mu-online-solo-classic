@@ -173,6 +173,6 @@ Write-Host "Deploying build artifacts to web/..." -ForegroundColor Cyan
 Copy-Item (Join-Path $OutDir "shell_login.wasm") (Join-Path $WebDir "shell_login.wasm") -Force
 Copy-Item (Join-Path $OutDir "shell_login.js") (Join-Path $WebDir "shell_login.js") -Force
 Copy-Item (Join-Path $OutDir "shell_login.data") (Join-Path $WebDir "shell_login.data") -Force
-Copy-Item (Join-Path $OutDir "shell_login.html") (Join-Path $WebDir "index.html") -Force
+# Copy-Item (Join-Path $OutDir "shell_login.html") (Join-Path $WebDir "index.html") -Force (preserved custom web/index.html)
 
 Write-Host "Build complete! All artifacts deployed to web/." -ForegroundColor Green

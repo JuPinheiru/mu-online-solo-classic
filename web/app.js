@@ -392,9 +392,14 @@ window.muInstallAudio = function () {
           } catch (err) {}
         }
         if (window.muShowToast) {
-          window.muShowToast(msg.success ? "Game progress saved successfully!" : "Game saved.");
+          window.muShowToast(msg.success ? "Game & inventory saved successfully!" : "Game saved.");
         }
       } else if (msg.type === 'SAVES_EXPORTED') {
+        if (msg.saves) {
+          try {
+            localStorage.setItem(getSaveKey(msg.realm !== undefined ? msg.realm : currentRealm), JSON.stringify(msg.saves));
+          } catch (err) {}
+        }
         if (msg.reason === 'download' && msg.saves) {
           try {
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(msg.saves, null, 2));

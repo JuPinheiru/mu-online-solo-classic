@@ -2360,7 +2360,7 @@ void gObjSecondProc()
 
 		if (lpObj->Connected > OBJECT_LOGGED && lpObj->Type == OBJECT_USER)
 		{
-			if (GetTickCount() - lpObj->AutoSaveTime > 600000)
+			if (GetTickCount() - lpObj->AutoSaveTime > 60000)
 			{
 				GDCharacterInfoSaveSend(lpObj->Index);
 
