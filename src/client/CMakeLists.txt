@@ -85,7 +85,6 @@ target_link_options(abi_probe PRIVATE "-sENVIRONMENT=node")
 
 add_executable(webgl2_smoke browser/webgl2_smoke.cpp)
 target_link_options(webgl2_smoke PRIVATE
-    "--shell-file=${CMAKE_CURRENT_SOURCE_DIR}/browser/shell.html"
     "-sMIN_WEBGL_VERSION=2"
     "-sMAX_WEBGL_VERSION=2"
     "-sENVIRONMENT=web"

@@ -278,6 +278,9 @@ window.muInstallAudio = function () {
     var on = document.visibilityState === 'visible' && document.hasFocus();
     if (typeof Module !== 'undefined' && Module._mu_audible)
       Module._mu_audible(on ? 1 : 0);
+    if (document.visibilityState === 'hidden' && window.soloBridge && window.soloBridge.saveNow) {
+      window.soloBridge.saveNow();
+    }
   }
 
   function resume() {

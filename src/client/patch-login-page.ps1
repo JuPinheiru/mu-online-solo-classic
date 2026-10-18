@@ -4,7 +4,6 @@ $ErrorActionPreference = "Stop"
 $ClientDir = $PSScriptRoot
 $outDir = Join-Path $ClientDir "out"
 $js = Join-Path $outDir "shell_login.js"
-$html = Join-Path $outDir "shell_login.html"
 
 function Replace-Once([string]$path, [string]$old, [string]$new) {
     $text = [IO.File]::ReadAllText($path).Replace("`r`n", "`n").Replace("`r", "`n")
@@ -265,7 +264,7 @@ Replace-Once $js @"
     };
 "@
 
-Replace-Once $js @"
+Replace-Once $js @'
         const chunks = [];
         const headers = response.headers;
         const total = Number(headers.get('Content-Length') || packageSize);
@@ -280,7 +279,18 @@ Replace-Once $js @"
           chunks.push(value);
           loaded += value.length;
           Module['dataFileDownloads'][packageName] = {loaded, total};
-"@ @"
+
+          let totalLoaded = 0;
+          let totalSize = 0;
+
+          for (const download of Object.values(Module['dataFileDownloads'])) {
+            totalLoaded += download.loaded;
+            totalSize += download.total;
+          }
+
+          Module['setStatus'] && Module['setStatus'](`Downloading data... (${totalLoaded}/${totalSize})`);
+        }
+'@ @'
         const chunks = [];
         const headers = response.headers;
         const contentLength = Number(headers.get('Content-Length')) || 0;
@@ -321,29 +331,7 @@ Replace-Once $js @"
 
           Module['setStatus'] && Module['setStatus'](`Downloading data... (${totalLoaded}/${totalSize})`);
         }
-"@
-
-Replace-Once $html "      canvas { background: #000; display: block; margin-top: 8px; }" @"
-      html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: hidden; cursor: default; }
-      #status, #log { display: none; }
-      canvas { background: #000; position: fixed; left: 0; top: 0; z-index: 2; outline: none; border: 0; cursor: none; }
-      canvas:focus, canvas:focus-visible { outline: none !important; }
-"@
-
-Replace-Once $html "      var Module = {" @"
-      window.onerror = function (msg, src, line, col, err) {
-        logElement.textContent += 'ONERR ' + msg + '\n' + (err && err.stack ? err.stack : '') + '\n';
-        var mErr = document.getElementById('muStatusMsg');
-        if (mErr) { mErr.style.color = '#ef4444'; mErr.textContent = 'Loading error. Please refresh the page.'; }
-      };
-      var Module = {
-"@
-
-Replace-Once $html "        preRun: [function () {" @"
-        locateFile: function (path) { return path + '?t=$Token'; },
-        preRun: [function () {
-"@
-
-Replace-Once $html '    <script async type="text/javascript" src="shell_login.js"></script>' "    <script async type=`"text/javascript`" src=`"shell_login.js?t=$Token`"></script>"
+'@
 
 Write-Output "PATCH_OK $Token"
+

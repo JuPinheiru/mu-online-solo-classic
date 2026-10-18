@@ -2367,12 +2367,14 @@ void gObjSecondProc()
 				lpObj->AutoSaveTime = GetTickCount();
 			}
 
+#if 0 // In Solo WebAssembly mode, checksum timeout must not disconnect the single player
 			if (lpObj->CheckSumTime > 0 && GetTickCount() - lpObj->CheckSumTime > 5000)
 			{
 				LogAdd(LOG_BLACK, "[%s][%s] CheckSumTime Error", lpObj->Account, lpObj->Name);
 
 				GCCloseClientSend(n, 0);
 			}
+#endif
 
 			gObjPKDownCheckTime(lpObj, 1);
 
@@ -2381,6 +2383,7 @@ void gObjSecondProc()
 			gObjTimeCheckSelfDefense(lpObj);
 		}
 
+#if 0 // In Solo WebAssembly mode, inactivity/keepalive timeout must not disconnect the single player
 		if (lpObj->Connected == OBJECT_CONNECTED || lpObj->Connected == OBJECT_LOGGED || lpObj->Connected == OBJECT_ONLINE)
 		{
 			if (lpObj->Type == OBJECT_USER)
@@ -2405,6 +2408,7 @@ void gObjSecondProc()
 				}
 			}
 		}
+#endif
 	}
 }
 

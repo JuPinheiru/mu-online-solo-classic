@@ -116,10 +116,9 @@ $objPaths = $objFiles | ForEach-Object { $_.FullName.Replace('\', '/') }
 # --- 5. Link WebAssembly Client ---
 Write-Host "Linking WebAssembly client ($($objFiles.Count) objects)..." -ForegroundColor Cyan
 
-$shellHtml = Join-Path $ClientDir "browser\shell.html"
 $shellLoginCpp = Join-Path $ClientDir "browser\shell_login.cpp"
 $netWsCpp = Join-Path $ClientDir "browser\net_ws.cpp"
-$outHtml = Join-Path $OutDir "shell_login.html"
+$outJs = Join-Path $OutDir "shell_login.js"
 
 $linkArgs = @(
     "-std=c++17",
@@ -133,8 +132,7 @@ $linkArgs = @(
     $shellLoginCpp,
     $netWsCpp,
     "@$objsTxt",
-    "-o", $outHtml,
-    "--shell-file", $shellHtml,
+    "-o", $outJs,
     "--profiling-funcs",
     "-sLEGACY_GL_EMULATION",
     "-sGL_FFP_ONLY",
@@ -173,6 +171,5 @@ Write-Host "Deploying build artifacts to web/..." -ForegroundColor Cyan
 Copy-Item (Join-Path $OutDir "shell_login.wasm") (Join-Path $WebDir "shell_login.wasm") -Force
 Copy-Item (Join-Path $OutDir "shell_login.js") (Join-Path $WebDir "shell_login.js") -Force
 Copy-Item (Join-Path $OutDir "shell_login.data") (Join-Path $WebDir "shell_login.data") -Force
-# Copy-Item (Join-Path $OutDir "shell_login.html") (Join-Path $WebDir "index.html") -Force (preserved custom web/index.html)
 
 Write-Host "Build complete! All artifacts deployed to web/." -ForegroundColor Green

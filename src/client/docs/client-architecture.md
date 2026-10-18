@@ -113,7 +113,7 @@ What `link-login.bat` does:
 4. Links the WebAssembly executable with legacy fixed-function WebGL emulation (`-sLEGACY_GL_EMULATION -sGL_FFP_ONLY -sMIN_WEBGL_VERSION=2`).
 5. Packages preloaded game assets (`--preload-file login-data@/Data`) into `shell_login.data`.
 6. Executes `patch-login-page.ps1` to apply WebGL batching optimizations.
-7. Copies `shell_login.wasm`, `shell_login.js`, and `shell_login.html` directly to `web/index.html`.
+7. Copies `shell_login.wasm`, `shell_login.js`, and `shell_login.data` directly to `web/`.
 
 ---
 
@@ -124,8 +124,7 @@ src/client/
 ├── browser/               # Browser runtime shell and bridge
 │   ├── net_ws.cpp         # In-memory network bridge to server worker
 │   ├── shell_login.cpp    # WebGL2 client main loop & input adapters
-│   ├── mu_mesh_draw.cpp   # WebGL2 mesh drawing optimizations
-│   └── shell.html         # HTML shell template
+│   └── mu_mesh_draw.cpp   # WebGL2 mesh drawing optimizations
 ├── docs/                  # Documentation
 │   ├── client-architecture.md   # This document
 │   └── platform-dependencies.md # Win32 API to WebGL2/WASM mapping
