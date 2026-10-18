@@ -36,6 +36,15 @@ set "WEB=%REPO_ROOT%\web"
 if not exist "%OUT%\all" mkdir "%OUT%\all"
 if not exist "%PROOF%" mkdir "%PROOF%"
 
+set INC=-I "%CLIENT_DIR%\browser" -I "%CLIENT_DIR%\browser\compat" -I "%CLIENT_DIR%\src" -I "%CLIENT_DIR%\lib\libjpeg\jpeg-6b" -I "%CLIENT_DIR%\lib\miniaudio"
+
+emcc -c -std=c++17 -O2 -ferror-limit=10 -Wno-macro-redefined -Wno-ignored-attributes -Wno-deprecated-non-prototype -Wno-c++11-narrowing %INC% "%CLIENT_DIR%\browser\shell_login.cpp" -o "%OUT%\all\browser_shell_login.o"
+if errorlevel 1 ( echo COMPILE_SHELL_FAIL & exit /b 1 )
+emcc -c -std=c++17 -O2 -ferror-limit=10 -Wno-macro-redefined -Wno-ignored-attributes -Wno-deprecated-non-prototype -Wno-c++11-narrowing %INC% "%CLIENT_DIR%\browser\net_ws.cpp" -o "%OUT%\all\browser_net_ws.o"
+if errorlevel 1 ( echo COMPILE_NET_FAIL & exit /b 1 )
+emcc -c -std=c++17 -O2 -ferror-limit=10 -Wno-macro-redefined -Wno-ignored-attributes -Wno-deprecated-non-prototype -Wno-c++11-narrowing %INC% "%CLIENT_DIR%\browser\mu_mesh_draw.cpp" -o "%OUT%\all\browser_mu_mesh_draw.o"
+if errorlevel 1 ( echo COMPILE_MESH_FAIL & exit /b 1 )
+
 del "%PROOF%\login-objs.txt" 2>nul
 for %%F in ("%OUT%\all\*.o") do (
   set "P=%%~fF"
@@ -43,9 +52,7 @@ for %%F in ("%OUT%\all\*.o") do (
   echo !P!>> "%PROOF%\login-objs.txt"
 )
 
-set INC=-I "%CLIENT_DIR%\browser" -I "%CLIENT_DIR%\browser\compat" -I "%CLIENT_DIR%\src" -I "%CLIENT_DIR%\lib\libjpeg\jpeg-6b" -I "%CLIENT_DIR%\lib\miniaudio"
-
-emcc -std=c++17 -ferror-limit=30 -sDEFAULT_TO_CXX -Wno-macro-redefined -Wno-ignored-attributes -Wno-deprecated-non-prototype -Wno-c++11-narrowing %INC% "%CLIENT_DIR%\browser\shell_login.cpp" "%CLIENT_DIR%\browser\net_ws.cpp" @"%PROOF%\login-objs.txt" -o "%OUT%\shell_login.js" --profiling-funcs -sLEGACY_GL_EMULATION -sGL_FFP_ONLY -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sINITIAL_MEMORY=536870912 -sSTACK_SIZE=8388608 -sFORCE_FILESYSTEM=1 -sALLOW_MEMORY_GROWTH=0 -sEXPORTED_RUNTIME_METHODS=HEAPU8 --preload-file "%DATA%@/Data" --preload-file "%CONFIG%@/config.ini" -Wl,--error-limit=0 > "%PROOF%\login-link.txt" 2>&1
+emcc -std=c++17 --profiling-funcs -sEMULATE_FUNCTION_POINTER_CASTS=1 -ferror-limit=30 -sDEFAULT_TO_CXX -Wno-macro-redefined -Wno-ignored-attributes -Wno-deprecated-non-prototype -Wno-c++11-narrowing %INC% @"%PROOF%\login-objs.txt" -o "%OUT%\shell_login.js" -sLEGACY_GL_EMULATION -sGL_FFP_ONLY -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sINITIAL_MEMORY=536870912 -sSTACK_SIZE=8388608 -sFORCE_FILESYSTEM=1 -sALLOW_MEMORY_GROWTH=0 -sEXPORTED_RUNTIME_METHODS=HEAPU8 --preload-file "%DATA%@/Data" --preload-file "%CONFIG%@/config.ini" -Wl,--error-limit=0 > "%PROOF%\login-link.txt" 2>&1
 if errorlevel 1 (
   echo LINK_FAIL
   type "%PROOF%\login-link.txt"

@@ -32,8 +32,8 @@ if not exist "%OUT%" mkdir "%OUT%"
 if not exist "%PROOF%" mkdir "%PROOF%"
 
 set INC=-I "%CLIENT_DIR%\browser" -I "%CLIENT_DIR%\browser\compat" -I "%CLIENT_DIR%\src" -I "%CLIENT_DIR%\lib\libjpeg\jpeg-6b" -I "%CLIENT_DIR%\lib\miniaudio"
-set CXXFLAGS=-c -std=c++17 -ferror-limit=5 -Wno-macro-redefined -Wno-ignored-attributes -Wno-deprecated-non-prototype -Wno-c++11-narrowing
-set CFLAGS=-c -std=c11 -ferror-limit=5 -Wno-deprecated-non-prototype -I "%CLIENT_DIR%\lib\libjpeg\jpeg-6b"
+set CXXFLAGS=-c -std=c++17 -O2 -ferror-limit=5 -Wno-macro-redefined -Wno-ignored-attributes -Wno-deprecated-non-prototype -Wno-c++11-narrowing
+set CFLAGS=-c -std=c11 -O2 -ferror-limit=5 -Wno-deprecated-non-prototype -I "%CLIENT_DIR%\lib\libjpeg\jpeg-6b"
 
 set OK=0
 set BAD=0
@@ -52,7 +52,7 @@ set "FLAT=%REL:\=_%"
 set "FLAT=%FLAT:/=_%"
 set "FLAT=%FLAT:.cpp=.o%"
 set "FLAT=%FLAT:.c=.o%"
-if exist "%OUT%\%FLAT%" (
+if not "%FORCE%"=="1" if exist "%OUT%\%FLAT%" (
   set /a OK+=1
   exit /b 0
 )

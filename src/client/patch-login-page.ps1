@@ -333,5 +333,11 @@ Replace-Once $js @'
         }
 '@
 
+# Strip temporary include comments containing absolute local paths (e.g. // include: C:\Users\...\Temp\...)
+$jsContent = [IO.File]::ReadAllText($js)
+$jsCleaned = [regex]::Replace($jsContent, '(?m)^\s*//\s*(?:end\s+)?include:\s*(?:[A-Za-z]:[\\/]|/).*\r?\n?', '')
+[IO.File]::WriteAllText($js, $jsCleaned, (New-Object System.Text.UTF8Encoding $false))
+
 Write-Output "PATCH_OK $Token"
+
 

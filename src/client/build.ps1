@@ -69,11 +69,12 @@ $Includes = @(
     "-I", (Join-Path $ClientDir "lib\libjpeg\jpeg-6b"),
     "-I", (Join-Path $ClientDir "lib\miniaudio")
 )
-$CxxFlags = @("-c", "-std=c++17", "-ferror-limit=5", "-Wno-macro-redefined", "-Wno-ignored-attributes", "-Wno-deprecated-non-prototype", "-Wno-c++11-narrowing")
-$CFlags = @("-c", "-std=c11", "-ferror-limit=5", "-Wno-deprecated-non-prototype", "-I", (Join-Path $ClientDir "lib\libjpeg\jpeg-6b"))
+$CxxFlags = @("-c", "-std=c++17", "-O2", "-ferror-limit=5", "-Wno-macro-redefined", "-Wno-ignored-attributes", "-Wno-deprecated-non-prototype", "-Wno-c++11-narrowing")
+$CFlags = @("-c", "-std=c11", "-O2", "-ferror-limit=5", "-Wno-deprecated-non-prototype", "-I", (Join-Path $ClientDir "lib\libjpeg\jpeg-6b"))
 
 if (Test-Path $SourcesList) {
-    $sources = Get-Content $SourcesList | Where-Object { $_.Trim() -ne "" }
+    $sources = @(Get-Content $SourcesList | Where-Object { $_.Trim() -ne "" })
+    $sources += @("browser/shell_login.cpp", "browser/net_ws.cpp", "browser/mu_mesh_draw.cpp")
     Write-Host "Checking $($sources.Count) source files..." -ForegroundColor Cyan
     $compiled = 0
     foreach ($rel in $sources) {
@@ -116,12 +117,12 @@ $objPaths = $objFiles | ForEach-Object { $_.FullName.Replace('\', '/') }
 # --- 5. Link WebAssembly Client ---
 Write-Host "Linking WebAssembly client ($($objFiles.Count) objects)..." -ForegroundColor Cyan
 
-$shellLoginCpp = Join-Path $ClientDir "browser\shell_login.cpp"
-$netWsCpp = Join-Path $ClientDir "browser\net_ws.cpp"
 $outJs = Join-Path $OutDir "shell_login.js"
 
 $linkArgs = @(
     "-std=c++17",
+    "--profiling-funcs",
+    "-sEMULATE_FUNCTION_POINTER_CASTS=1",
     "-ferror-limit=30",
     "-sDEFAULT_TO_CXX",
     "-Wno-macro-redefined",
@@ -129,11 +130,8 @@ $linkArgs = @(
     "-Wno-deprecated-non-prototype",
     "-Wno-c++11-narrowing"
 ) + $Includes + @(
-    $shellLoginCpp,
-    $netWsCpp,
     "@$objsTxt",
     "-o", $outJs,
-    "--profiling-funcs",
     "-sLEGACY_GL_EMULATION",
     "-sGL_FFP_ONLY",
     "-sMIN_WEBGL_VERSION=2",

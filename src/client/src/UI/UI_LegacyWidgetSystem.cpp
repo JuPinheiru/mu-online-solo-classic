@@ -166,7 +166,11 @@ void __cdecl L_YGXPAXIHP6EX0_Z1_Z(void *arr, int elem_size, int count, void *cto
         fn(p);
 }
 // Forward declarations — physics helpers defined in VerletNode section below
+#ifdef __EMSCRIPTEN__
+void* __fastcall SpringNode_Ctor(void *node);
+#else
 void  __fastcall SpringNode_Ctor(void *node);   // ctor (thiscall en el original: arg en ECX)  // IDA-port: void return
+#endif
 void  __fastcall SpringNode_SetPos(void *node, float x, float y, float z, int pinned);
 void  __fastcall SpringNode_GetPos(void *node, float *out);
 float __fastcall SpringNode_Delta(void *nodeA, int nodeB_ptr, float *out_delta);

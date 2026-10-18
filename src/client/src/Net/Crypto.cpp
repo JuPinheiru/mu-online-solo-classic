@@ -18,7 +18,11 @@
 #include "Net/Ping.h"
 
 void __fastcall FUN_00401af0(void*);
+#ifdef __EMSCRIPTEN__
+void* __fastcall SpringNode_Ctor(void *node);
+#else
 void  __fastcall SpringNode_Ctor(void *node);
+#endif
 int   __cdecl    Cloth_SpringRange(int a1, int a3, const float *range);
 void  __cdecl    Cloth_SpringEqual(int a1, int a3, float rest);
 char  __fastcall VerletSystem_Flush(int a1);

@@ -320,6 +320,11 @@ void  __cdecl RenderTerrainAlphaBitmap(int Texture, float xf, float yf, float Si
 // ── Skill/weapon widget system (UI overlay beams) ─────────────────────────────
 void* __fastcall Widget_Ctor(void *param_1); // IDA: Widget_Ctor (0x004093A0)
 void* __fastcall Widget_CtorBase(void *param_1); // IDA: Widget_CtorBase (0x00407FE0)
+#ifdef __EMSCRIPTEN__
+void* __fastcall SpringNode_Ctor(void *node);
+#else
+void  __fastcall SpringNode_Ctor(void *node);
+#endif
 void  __cdecl L_YGXPAXIHP6EX0_Z1_Z(void *arr, int size, int elem, void *ctor); // Array_InitWithCtor
 void  __cdecl SpringMesh_Create(void *widget, int entity, short *slot, int type, int radius, int flags); // Widget_BindEntity
 void  __cdecl VerletNode_AddToSystem(void *widget, float x, float y, float z, float radius, int boneIdx); // Cloth_AddAnchor

@@ -280,19 +280,19 @@ static void install_draw_fix(void) {
             return r;
         };
         var a = GLctx.drawArrays;
+        var muAttribIds = new Int32Array(4);
         GLctx.drawArrays = function(mode, first, count) {
             var prev = lastArrayBuffer;
             var imm = (typeof GLImmediate !== 'undefined') ? GLImmediate : null;
             if (imm && imm.clientAttributes && imm.enabledClientAttributes && prev) {
                 var strideNow = imm.stride | 0;
-                var ids = [];
-                ids.push(imm.VERTEX);
-                ids.push(imm.NORMAL);
-                ids.push(imm.COLOR);
-                ids.push(imm.TEXTURE0);
+                muAttribIds[0] = imm.VERTEX;
+                muAttribIds[1] = imm.NORMAL;
+                muAttribIds[2] = imm.COLOR;
+                muAttribIds[3] = imm.TEXTURE0;
                 var bsizeNow = bufferBytes(prev);
-                for (var k = 0; k < ids.length; k++) {
-                    var idx = ids[k];
+                for (var k = 0; k < 4; k++) {
+                    var idx = muAttribIds[k];
                     if (idx < 0 || idx >= maxAttribs) continue;
                     var attr = imm.clientAttributes[idx];
                     if (!imm.enabledClientAttributes[idx]) {
@@ -447,20 +447,9 @@ static int mobile_low(void) {
 }
 
 static void apply_mobile_low(void) {
-    if (!mobile_low()) return;
-    // Ground, map objects, the HUD and health bars stay. These skips are the
-    // whole extra passes: a shadow mesh per character, particles, map sprites,
-    // skill trails, weather, item glow and wings.
-    gUserSettings.SetAntilagRuntime(ANTILAG_SHADOWS, true);
-    gUserSettings.SetAntilagRuntime(ANTILAG_SKILLS, true);
-    gUserSettings.SetAntilagRuntime(ANTILAG_STATIC_EFFECTS, true);
-    gUserSettings.SetAntilagRuntime(ANTILAG_DYNAMIC_EFFECTS, true);
-    gUserSettings.SetAntilagRuntime(ANTILAG_WINGS, true);
-    gUserSettings.SetAntilagRuntime(ANTILAG_WEATHER, true);
-    gUserSettings.SetAntilagRuntime(ANTILAG_GLOW, true);
-    gWindow.SetResolution(800, 600);
-    printf("LOGIN mobile low 800x600\n");
-    fflush(stdout);
+    // Disabled: previous mobile preset forcibly disabled ANTILAG_SKILLS (e.g. Evil Spirit),
+    // ANTILAG_STATIC_EFFECTS, ANTILAG_DYNAMIC_EFFECTS (monster transparent textures/particles),
+    // ANTILAG_WINGS, and ANTILAG_GLOW.
 }
 
 // ?u=account&p=password fills the login fields. Both are capped at 10,
@@ -647,6 +636,6 @@ int main(void) {
     emscripten_set_keyup_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, on_key);
     printf("LOGIN loop label450=%.24s\n", GlobalText[450]);
     fflush(stdout);
-    emscripten_set_main_loop(frame, 25, 1);
+    emscripten_set_main_loop(frame, 0, 1);
     return 0;
 }
