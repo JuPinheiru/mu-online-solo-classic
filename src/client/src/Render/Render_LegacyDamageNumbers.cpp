@@ -5,6 +5,9 @@
 #include "globals.h"
 #include "functions.h"
 #include "Net/Net.h"
+#ifdef __EMSCRIPTEN__
+#include "mu_mesh_draw.h"
+#endif
 
 extern void __cdecl operator_delete(void* ptr);
 
@@ -131,6 +134,7 @@ void __cdecl RenderPoints(int, int, int, int)
 {
     EnableAlphaTest(true);
     GL_DisableDepthTest();                    // DisableDepthTest
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (float)GL_MODULATE);
 
     char* base = (char*)&DAT_07c80110[0];
     for (int i = 0; i < 100; ++i) {
@@ -145,4 +149,7 @@ void __cdecl RenderPoints(int, int, int, int)
                      alpha,
                      *(float*)(slot + 0x0c));    // scale
     }
+#ifdef __EMSCRIPTEN__
+    mu_mesh_flush();
+#endif
 }

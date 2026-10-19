@@ -21,6 +21,9 @@
 #include "structs.h"
 #include "functions.h"
 #include <gl/GL.h>
+#ifdef __EMSCRIPTEN__
+#include "mu_mesh_draw.h"
+#endif
 
 // sub_4E38B0 / sub_47F360 / sub_47F4C0 are now ported in HUD_Pass4.cpp.
 // sub_4E9300 is ported in HUD_Pass6.cpp.
@@ -584,6 +587,34 @@ void Render_HudPass_4EB070(void) { Render_HudPass_4EB070_(); }
 
 extern "C" const BYTE* Guild_GetMarkPixels(int row);
 
+// IDA pinta la etiqueta con TextOut sobre el DIB de la fuente y sube ese
+// bitmap. En el browser TextOutA no escribe píxeles, así que la placa salía
+// vacía. El atlas de UI_DrawText es el que ya usa el resto del HUD.
+static void DrawHoverLabel(int x, int y, const char* src, int cap)
+{
+    if (!src || !src[0]) return;
+    // Proyección fallida (Camera_ProjectWorldToScreen escribe -1000).
+    if (x < -400 || y < -400) return;
+    char buf[256];
+    int limit = cap;
+    if (limit > (int)sizeof(buf) - 1) limit = (int)sizeof(buf) - 1;
+    if (limit < 1) return;
+    int n = 0;
+    while (n < limit && src[n]) {
+        buf[n] = src[n];
+        ++n;
+    }
+    buf[n] = 0;
+    if (!buf[0]) return;
+#ifdef __EMSCRIPTEN__
+    mu_mesh_flush();
+#endif
+    // glColor3f previo puede no dejar alfa en 1, y CUIRenderText multiplica
+    // el color del texto por el color actual: alfa 0 = etiqueta invisible.
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    UI_DrawText(x, y, buf, 0, 1, 0);
+}
+
 void __cdecl RenderBoolean(int x, int y, DWORD c)
 {
     if (!c) return;
@@ -591,15 +622,17 @@ void __cdecl RenderBoolean(int x, int y, DWORD c)
     EnableAlphaTest(true);
     glColor3f(1.0f, 1.0f, 1.0f);
 
-    int texW = 1;
-    int texH = 1;
+    const char* name = (const char*)c;
+    const char* prefix = (const char*)(c + 24);
+    if (!name || name[0] == '\0') return;
+
     LONG cx = *(int*)(c + 576);
     LONG cy = *(int*)(c + 580);
     TextSize.cx = cx;
     TextSize.cy = cy;
 
-    while (texW < cx && texW < 256) texW *= 2;
-    while (texH < cy && texH < 256) texH *= 2;
+    DWORD savedTextColor = m_dwTextColor;
+    DWORD savedBackColor = m_dwBackColor;
 
     // Colores de IDA RenderBoolean L121-144 (el decompile los muestra como
     // decimales con signo):
@@ -607,33 +640,21 @@ void __cdecl RenderBoolean(int x, int y, DWORD c)
     //   -9016=0xFFFFDCC8  -12806401=0xFF3C96FF  -14790401=0xFF1E50FF
     //   default -16776961=0xFF0000FF
     BYTE kind = *(BYTE*)(c + 36);
+    DWORD textColor;
     switch (kind) {
-        case 0:  m_dwTextColor = 0xFFF0FF96u; break;
-        case 1:  m_dwTextColor = 0xFFFF7864u; break;
-        case 2:  m_dwTextColor = 0xFFFFB48Cu; break;
-        case 3:  m_dwTextColor = 0xFFFFDCC8u; break;
-        case 4:  m_dwTextColor = 0xFF3C96FFu; break;
-        case 5:  m_dwTextColor = 0xFF1E50FFu; break;
-        default: m_dwTextColor = 0xFF0000FFu; break;
+        case 0:  textColor = 0xFFF0FF96u; break;
+        case 1:  textColor = 0xFFFF7864u; break;
+        case 2:  textColor = 0xFFFFB48Cu; break;
+        case 3:  textColor = 0xFFFFDCC8u; break;
+        case 4:  textColor = 0xFF3C96FFu; break;
+        case 5:  textColor = 0xFF1E50FFu; break;
+        default: textColor = 0xFF0000FFu; break;
     }
 
-    byte_7E11D6E = 1;
-    int drawX = x * (int)gWindow.GetWidth() / 640;
-    int drawY = y * (int)gWindow.GetHeight() / 480;
+    DAT_07e11d6e = 1;
     gFont.LimitHeight(32);
     int fontHeight = gFont.GetHeight();
-
-    auto ClearFontRows = [&](int rows) {
-        if (rows <= 0 || !ppvBits) return;
-        int rowBytes = 3 * TextSize.cx;
-        char* row = (char*)ppvBits;
-        for (int i = 0; i < rows; ++i) {
-            memset(row, 0, 4 * (rowBytes >> 2));
-            memset(&row[4 * (rowBytes >> 2)], 0, rowBytes & 3);
-            row += 1536;
-        }
-    };
-    ClearFontRows(fontHeight);
+    if (fontHeight <= 0) fontHeight = 14;
 
     // Constantes de IDA RenderBoolean L180-195.
     //   mode 0: back=-1773129196=0x96503214  SetTextColor_0=-14116=0xFFFFC8DC
@@ -641,12 +662,13 @@ void __cdecl RenderBoolean(int x, int y, DWORD c)
     //   otros : back=-1778384796=0x96000064  SetTextColor_0=-16776961=0xFF0000FF
     BYTE mode = *(BYTE*)(c + 37);
     DWORD bg;
+    DWORD prefixColor;
     switch (mode) {
-        case 0:  bg = 0x96503214u; SetTextColor_0 = 0xFFFFC8DCu; break;
-        case 1:  bg = 0x9600643Cu; SetTextColor_0 = 0xFF00FFC8u; break;
-        default: bg = 0x96000064u; SetTextColor_0 = 0xFF0000FFu; break;
+        case 0:  bg = 0x96503214u; prefixColor = 0xFFFFC8DCu; break;
+        case 1:  bg = 0x9600643Cu; prefixColor = 0xFF00FFC8u; break;
+        default: bg = 0x96000064u; prefixColor = 0xFF0000FFu; break;
     }
-    m_dwBackColor = bg;
+    SetTextColor_0 = prefixColor;
 
     int rectX = *(int*)(c + 568);
     int rectY = *(int*)(c + 572);
@@ -655,45 +677,68 @@ void __cdecl RenderBoolean(int x, int y, DWORD c)
     if ((int)MouseX >= rectX && (int)MouseX < rectX + rectW &&
         (int)MouseY >= rectY && (int)MouseY < rectY + rectH &&
         InputEnable && Hero && *(BYTE*)((BYTE*)(uintptr_t)Hero + 846) &&
-        strcmp((const char*)c, (const char*)((BYTE*)(uintptr_t)Hero + 449)) &&
+        strcmp(name, (const char*)((BYTE*)(uintptr_t)Hero + 449)) &&
         (int)(dword_7E11DA8 % 6) < 3)
     {
-        m_dwBackColor = m_dwTextColor;
-        m_dwTextColor = bg;
+        DWORD tmp = bg;
+        bg = textColor;
+        textColor = tmp;
+        prefixColor = tmp;
     }
 
-    Font_RenderTextToBitmap(TextSize.cx, fontHeight, (LPCSTR)c, texW, 0, 0, 0, 0, (LPCSTR)(c + 24));
-    Font_RenderBitmapText(drawX, drawY, *(float*)&TextSize.cx, *(float*)&fontHeight, texW, texH, 0.0f, 640);
+    // Nombre en +0 (23 bytes antes del prefijo de guild en +24). El prefijo
+    // ocupa 12 bytes. Las líneas de chat viven en +44 y +300, 256 bytes cada una.
+    int curX = x;
+    if (prefix && prefix[0] != '\0') {
+        char guild[12];
+        int gn = 0;
+        while (gn < 11 && prefix[gn]) {
+            guild[gn] = prefix[gn];
+            ++gn;
+        }
+        guild[gn] = 0;
+        m_dwTextColor = prefixColor;
+        m_dwBackColor = bg;
+        DrawHoverLabel(curX, y, guild, 11);
 
-    // IDA L214-224: -1778372066=0x9600321E · -1778384846=0x96000032 ·
-    //               -1775100406=0x96321E0A
+        SIZE psz = {0, 0};
+        GetTextExtentPointA(gFont.GetTextDC(), guild, gn, &psz);
+        const float rateX = (gWindow.GetScreenRateX() > 0.0f) ? gWindow.GetScreenRateX() : 1.0f;
+        curX += (int)((float)psz.cx / rateX);
+    }
+
+    m_dwTextColor = textColor;
+    m_dwBackColor = bg;
+    DrawHoverLabel(curX, y, name, 23);
+
+    // Chat bubble lines (if active)
+    DWORD chatBg;
     if (mode) {
-        m_dwBackColor = (mode == 1) ? 0x9600321Eu : 0x96000032u;
+        chatBg = (mode == 1) ? 0x9600321Eu : 0x96000032u;
     } else {
-        m_dwBackColor = 0x96321E0Au;
+        chatBg = 0x96321E0Au;
     }
 
-    // IDA: m_dwTextColor = -3613466 (0xFFC8DCE6), y -2134319898 (0x80C8DCE6)
-    // cuando al mensaje le quedan menos de 10 ticks de vida (fade-out).
+    const float rateY = (gWindow.GetScreenRateY() > 0.0f) ? gWindow.GetScreenRateY() : 1.0f;
+    int fontH = (int)((float)fontHeight / rateY);
+    if (fontH <= 0) fontH = 14;
+
     int fade2 = *(int*)(c + 560);
     if (fade2 > 0) {
         m_dwTextColor = (fade2 < 10) ? 0x80C8DCE6u : 0xFFC8DCE6u;
-        ClearFontRows(fontHeight);
-        Font_RenderTextToBitmap(TextSize.cx, fontHeight, (LPCSTR)(c + 300), texW, 0, 0, 0, 0, 0);
-        Font_RenderBitmapText(drawX, drawY + fontHeight, *(float*)&TextSize.cx, *(float*)&fontHeight, texW, texH, 0.0f, 640);
+        m_dwBackColor = chatBg;
+        DrawHoverLabel(x, y + fontH, (const char*)(c + 300), 255);
 
         int fade1 = *(int*)(c + 556);
         m_dwTextColor = (fade1 < 10) ? 0x80C8DCE6u : 0xFFC8DCE6u;
-        ClearFontRows(fontHeight);
-        Font_RenderTextToBitmap(TextSize.cx, fontHeight, (LPCSTR)(c + 44), texW, 0, 0, 0, 0, 0);
-        Font_RenderBitmapText(drawX, drawY + 2 * fontHeight, *(float*)&TextSize.cx, *(float*)&fontHeight, texW, texH, 0.0f, 640);
+        m_dwBackColor = chatBg;
+        DrawHoverLabel(x, y + 2 * fontH, (const char*)(c + 44), 255);
     } else {
         int fade1 = *(int*)(c + 556);
         if (fade1 > 0) {
             m_dwTextColor = (fade1 < 10) ? 0x80C8DCE6u : 0xFFC8DCE6u;
-            ClearFontRows(fontHeight);
-            Font_RenderTextToBitmap(TextSize.cx, fontHeight, (LPCSTR)(c + 44), texW, 0, 0, 0, 0, 0);
-            Font_RenderBitmapText(drawX, drawY + fontHeight, *(float*)&TextSize.cx, *(float*)&fontHeight, texW, texH, 0.0f, 640);
+            m_dwBackColor = chatBg;
+            DrawHoverLabel(x, y + fontH, (const char*)(c + 44), 255);
         }
     }
 
@@ -719,4 +764,7 @@ void __cdecl RenderBoolean(int x, int y, DWORD c)
             DAT_00561574 = previousTextureSlot;
         }
     }
+
+    m_dwTextColor = savedTextColor;
+    m_dwBackColor = savedBackColor;
 }

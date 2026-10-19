@@ -201,18 +201,6 @@ void NetRecv_15(BYTE* Msg, int Size, BYTE hdr, BYTE sub, bool bEncrypted)
     if (stunFlag) {
         extern void __cdecl SetPlayerShock(int c, int Hit);
         SetPlayerShock((int)tgtSlot, (int)damage);
-        float pos[3] = { *(float*)(tgtSlot + 0x10),
-                         *(float*)(tgtSlot + 0x14),
-                         *(float*)(tgtSlot + 0x18) };
-        float color[3] = { 1.0f, 0.0f, 0.0f };
-        CreatePoint(pos, (int)damage, color, 15.0f);
-        if (targetId == g_HeroKey && DAT_07cf1ff4) {
-            WORD* pHP = (WORD*)((BYTE*)(uintptr_t)DAT_07cf1ff4 + 28);
-            if (damage < *pHP) *pHP -= damage; else *pHP = 0;
-            *(WORD*)(tgtSlot + 760) = (WORD)damage;
-            SyncHeroLife(Msg, Size, pHP);
-        }
-        return;
     }
 
     // ── Hero HP decrement ────────────────────────────────────────
@@ -311,19 +299,22 @@ void NetRecv_15(BYTE* Msg, int Size, BYTE hdr, BYTE sub, bool bEncrypted)
         scale = 15.0f;
         if (bIgnore) {
             scale = 50.0f;
-            color[0] = 1.0f; color[1] = 1.0f; color[2] = 0.0f;  // yellow
+            color[0] = 1.0f; color[1] = 1.0f; color[2] = 0.0f;  // yellow (ignore defense)
         } else if (bExcellent) {
             scale = 50.0f;
-            color[0] = 0.0f; color[1] = 1.0f; color[2] = 0.6f;  // cyan
+            color[0] = 0.0f; color[1] = 1.0f; color[2] = 0.2f;  // bright green (excellent)
         } else if (bCritical) {
             scale = 50.0f;
-            color[0] = 0.0f; color[1] = 0.6f; color[2] = 1.0f;  // blue
+            color[0] = 0.1f; color[1] = 0.7f; color[2] = 1.0f;  // light blue / cyan (critical)
         } else if (bReflect) {
-            color[0] = 1.0f; color[1] = 0.0f; color[2] = 1.0f;  // purple
+            scale = 20.0f;
+            color[0] = 0.9f; color[1] = 0.2f; color[2] = 1.0f;  // purple (reflect)
         } else if (targetId == g_HeroKey) {
-            color[0] = 1.0f; color[1] = 0.0f; color[2] = 0.0f;  // red
+            scale = 15.0f;
+            color[0] = 1.0f; color[1] = 0.15f; color[2] = 0.15f;// red (hero hit)
         } else {
-            color[0] = 1.0f; color[1] = 0.6f; color[2] = 0.0f;  // orange
+            scale = 15.0f;
+            color[0] = 1.0f; color[1] = 0.6f; color[2] = 0.0f;  // orange (monster normal)
         }
     }
     CreatePoint(pos, displayValue, color, scale);
@@ -890,6 +881,9 @@ void NetRecv_1A(BYTE* Msg, int Size, BYTE hdr, BYTE sub, bool bEncrypted)
                 pos[1] = *(float*)(tgt + 0x14);
                 pos[2] = *(float*)(tgt + 0x18);
                 float color[3] = { 1.0f, 0.6f, 0.0f };
+                if (tgtId == g_HeroKey) {
+                    color[0] = 1.0f; color[1] = 0.15f; color[2] = 0.15f;
+                }
                 CreatePoint(pos, (int)dmg, color, 15.0f);
             }
             // Hero damaged: decrement HP

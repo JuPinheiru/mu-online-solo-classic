@@ -74,6 +74,14 @@ int Net_GetFreeBuffer(int poolBase);
 // @ 0x004389A0
 void Net_ProcessPacket(void);
 
+// Drops bytes queued while the socket was down. A new GameServer starts its
+// packet serial at 0; replaying the old queue makes it close the connection.
+void Net_DropOutboundQueue(void);
+
+// Drops packets already parsed for the previous socket. A stale F3/03 that
+// runs after the new move list clears the M menu and it stays on "waiting".
+void Net_DropInboundQueue(void);
+
 // Send a packet to the server.
 // Builds header (0xC1, len, opcode) then queues in send_buf.
 // @ address TBD

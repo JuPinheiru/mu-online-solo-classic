@@ -11,6 +11,7 @@
 #include "Net/Recv/NetRecv.h"
 #include "Net/ServerCharacterStats.h"
 #include "Config/UserSettings.h"
+#include "Config/ServerConfig.h"
 #include "Net/HWID.h"
 
 // IDA: FUN_00433A80 ReceiveGGAuth. Pertenece al flujo de protocolo/autenticación,
@@ -295,14 +296,21 @@ void Recv_Redirect(const BYTE* Msg)
     for (int i = 0; i < 15 && Msg[4 + i]; ++i) IpAddr[i] = (char)Msg[4 + i];
     unsigned short port = (unsigned short)(Msg[20] | (Msg[21] << 8));
 
-    NetLog("NET:    Redirect → Disconnect + Connect(%s:%d)", IpAddr, port);
+    const char* connectIp = IpAddr;
+    if (strcmp(ServerConfig::ConnectServerIP, "127.0.0.1") == 0 ||
+        strcmp(ServerConfig::ConnectServerIP, "localhost") == 0 ||
+        strcmp(ServerConfig::GameServerIP, "127.0.0.1") == 0) {
+        connectIp = "127.0.0.1";
+    }
+
+    NetLog("NET:    Redirect → Disconnect + Connect(%s:%d)", connectIp, port);
     // Salimos del modo ConnectServer: el socket nuevo habla con el GameServer,
     // que responderá con JoinServer (F1/00) y arranca el login normal.
     // Reactivamos la capa MuEmu (byte-XOR) que el GameServer sí usa.
     gNetwork.EndConnectServerSession();
     MuEmu::SetActive(true);
     CWsctlc_Close((int)(uintptr_t)SocketClient);   // Net_Disconnect
-    CreateSocket(IpAddr, port);                   // Net_Connect
+    CreateSocket(connectIp, port);                   // Net_Connect
     g_bGameServerConnected = 1;                              // g_bGameServerConnected
 }
 

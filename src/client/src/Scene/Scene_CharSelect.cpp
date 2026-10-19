@@ -541,6 +541,10 @@ int Scene_CharSelect(void)
 
             // Character preview sub-render
             if (-1 < iVar9) {
+                DWORD savedFOV = DAT_00561554;
+                DWORD savedAngle[3] = { DAT_083a42b8, DAT_083a42bc, DAT_083a42c0 };
+                float savedPos[3] = { _DAT_083a42d4, _DAT_083a42d8, _DAT_083a42dc };
+
                 DAT_005597c4 = 0;
                 fVar11 = (float10)sinl((long double)DAT_05826e08 * (long double)_DAT_005528e0);
                 DAT_00561554 = 0x41200000;   // CameraFOV = 10.0
@@ -562,6 +566,10 @@ int Scene_CharSelect(void)
                     _DAT_083a42dc = camOut[2] + _DAT_07abf068;      // CameraPosition[2]
                 }
                 GL_BeginViewport(0x11d, iVar9 + 0x5a, 0x4a, 0x4f);
+                glEnable(GL_SCISSOR_TEST);
+                glScissor(OpenglWindowX, (int)(gWindow.GetHeight() - OpenglWindowY) - OpenglWindowHeight, OpenglWindowWidth, OpenglWindowHeight);
+                glClear(GL_DEPTH_BUFFER_BIT);
+                glDisable(GL_SCISSOR_TEST);
                 // _DAT_07abf0?? están tipados `float`: se asignan los valores (5.0f / 1.0f),
                 // no los bit-patterns 0x40a00000 / 0x3f800000.
                 _DAT_07abf06c = 0.0f; _DAT_07abf070 = 5.0f; _DAT_07abf05c = 1.0f;
@@ -569,6 +577,14 @@ int Scene_CharSelect(void)
                 RenderCharacter((undefined4 *)&DAT_07abf050, (undefined4 *)&DAT_07abf050, (undefined4 *)0x0);
                 GL_PopMatrixAll();
                 DAT_005597c4 = 1;
+
+                DAT_00561554 = savedFOV;
+                DAT_083a42b8 = savedAngle[0];
+                DAT_083a42bc = savedAngle[1];
+                DAT_083a42c0 = savedAngle[2];
+                _DAT_083a42d4 = savedPos[0];
+                _DAT_083a42d8 = savedPos[1];
+                _DAT_083a42dc = savedPos[2];
             }
         }
 

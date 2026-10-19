@@ -108,10 +108,11 @@ void CNetwork::OnSocketEvent(WORD evt, WORD err)
         extern void UIChatLogWindow_AddText(const char* strID, const char* msg, int color);
         if (!reconnecting)
             UIChatLogWindow_AddText((const char*)&DAT_083a7c5c, GlobalText[3], 1);
+        Net_DropOutboundQueue();
+        Net_DropInboundQueue();
         if (SocketClientSocket != 0xffffffff) {
-            SOCKET s = (SOCKET)SocketClientSocket;
+            closesocket((SOCKET)SocketClientSocket);
             SocketClientSocket = (DWORD)INVALID_SOCKET;
-            closesocket(s);
         }
     }
 }
@@ -357,9 +358,27 @@ void CNetwork::SendFrameC3(const BYTE* pkt, int totalLen)
 // Elige el frame segun la tabla del server y avisa cuando corrige al caller.
 // `chosenC3` es lo que pidio el call site; se respeta salvo que el server exija
 // lo contrario.
+// While the reconnect handshake is in progress the GameServer's serial is
+// back at 0. The in-game loop still wants to send 0x0E and movement. Those
+// consume the serial (or arrive first) and the server closes the socket
+// before the login packet is accepted.
+static bool ReconnectAllows(const BYTE* pkt, int totalLen)
+{
+    if (!gReconnect.IsActive()) return true;
+    if (!pkt || totalLen < 4) return false;
+    const BYTE head = pkt[2];
+    const BYTE sub = pkt[3];
+    if (head == 0xF1 && (sub == 0x01 || sub == 0x03 || sub == 0x04 || sub == 0x05))
+        return true;
+    if (head == 0xF3 && (sub == 0x00 || sub == 0x03))
+        return true;
+    return false;
+}
+
 void CNetwork::SendResolved(const BYTE* pkt, int totalLen, bool chosenC3, const char* who)
 {
     if (!pkt || totalLen < 3 || totalLen > 0x400) return;
+    if (!ReconnectAllows(pkt, totalLen)) return;
 
     const BYTE opcode = pkt[2];
     const BYTE subop  = (totalLen > 3) ? pkt[3] : 0;
@@ -409,6 +428,7 @@ void CNetwork::SendC1(const BYTE* pkt, int totalLen)
 // input format has 1-byte size at pkt[1] so we stomp there for consistency.
 void CNetwork::SendLarge(const BYTE* pkt, int totalLen)
 {
+    if (!ReconnectAllows(pkt, totalLen)) return;
     char buf[0x802];
 
     // Chain XOR universal — ver gNetwork.Send arriba para detalles.

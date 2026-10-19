@@ -304,6 +304,9 @@ void Game_EnterWorldTick(void)
                 CharacterAnimation(e, e);   // advance entity[+0x108] (anim frame)
             }
         }
+        if (*(char*)&DAT_07abf050 != '\0') {
+            CharacterAnimation((int)(uintptr_t)&DAT_07abf050, (int)(uintptr_t)&DAT_07abf050);
+        }
     } CLK_WATCH("after-CharAnim");
     Effect_UpdateAll();          CLK_WATCH("after-Effect_UpdateAll");
     Login_CameraUpdate();        CLK_WATCH("after-Login_CameraUpdate");
