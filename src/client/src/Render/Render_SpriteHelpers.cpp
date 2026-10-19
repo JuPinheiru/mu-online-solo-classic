@@ -6,6 +6,9 @@
 #include "stdafx.h"
 #include "globals.h"
 #include "functions.h"
+#ifdef __EMSCRIPTEN__
+#include "mu_mesh_draw.h"
+#endif
 // EnableAlphaBlend2 @ 0x00511810 (~28 lines) — OpenGL additive blending
 void __stdcall GL_SetBlendInvSrcColor(void) {
     // 0x00511810 — OpenGL additive blending (ONE_MINUS_DST_COLOR, ONE)
@@ -58,16 +61,6 @@ void __cdecl RenderSpriteUV(int Texture, float Position[3], float Width, float H
     transformed[1] = Position[0] * camMat[4] + Position[1] * camMat[5] + Position[2] * camMat[6] + camMat[7];
     transformed[2] = Position[0] * camMat[8] + Position[1] * camMat[9] + Position[2] * camMat[10] + camMat[11];
 
-    glBegin(7);  // GL_QUADS
-
-    // Ghidra decompile iterates 4 vertices. Per-vertex data:
-    //   Color: Light[vertex][0..2] + Alpha
-    //   TexCoord: UV[vertex][0..1]
-    //   Vertex: transformed position (offset per vertex from transformed[])
-    // Due to Ghidra reinterpreting Width/Height as data pointers and phantom regs,
-    // the exact per-vertex offset layout is from the caller's stack.
-    // Standard billboard quad: 4 corners offset by +/-Width, +/-Height from center.
-
     float* pColor = (float*)&Light[0][0];
     float* pUV = (float*)UV;
     float halfW = Width * 0.5f;
@@ -80,6 +73,33 @@ void __cdecl RenderSpriteUV(int Texture, float Position[3], float Width, float H
         {  halfW,  halfH },
         { -halfW,  halfH }
     };
+
+#ifdef __EMSCRIPTEN__
+    {
+        float rgba[16];
+        float xyz[12];
+        float local_uv[8];
+        for (int i = 0; i < 4; i++) {
+            rgba[i * 4 + 0] = pColor[i * 3 + 0];
+            rgba[i * 4 + 1] = pColor[i * 3 + 1];
+            rgba[i * 4 + 2] = pColor[i * 3 + 2];
+            rgba[i * 4 + 3] = Alpha;
+
+            local_uv[i * 2 + 0] = pUV[i * 2 + 0];
+            local_uv[i * 2 + 1] = pUV[i * 2 + 1];
+
+            xyz[i * 3 + 0] = transformed[0] + offsets[i][0];
+            xyz[i * 3 + 1] = transformed[1] + offsets[i][1];
+            xyz[i * 3 + 2] = transformed[2];
+        }
+        if (mu_mesh_emit4(MU_MESH_UV_COLOR, 1, local_uv, rgba, xyz)) return;
+    }
+#endif
+
+    // Pre-arm the color before glBegin for clientColor and fallback vertex attribute
+    glColor4f(pColor[0], pColor[1], pColor[2], Alpha);
+
+    glBegin(7);  // GL_QUADS
 
     for (int i = 0; i < 4; i++) {
         glColor4f(pColor[i * 3 + 0], pColor[i * 3 + 1], pColor[i * 3 + 2], Alpha);
