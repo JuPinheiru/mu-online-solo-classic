@@ -68,6 +68,23 @@ static bool LoadAccountData(const char* account, SOLO_ACCOUNT_DATA& data)
 {
 	std::memset(&data, 0, sizeof(data));
 	std::memcpy(data.account, account, sizeof(data.account));
+	data.account[sizeof(data.account) - 1] = '\0';
+
+	auto sanitizeAccountData = [](SOLO_ACCOUNT_DATA& d) {
+		if (d.characterCount > 5)
+		{
+			d.characterCount = 0;
+		}
+		d.account[sizeof(d.account) - 1] = '\0';
+		for (int i = 0; i < 5; ++i)
+		{
+			d.characters[i].name[sizeof(d.characters[i].name) - 1] = '\0';
+			if (d.characters[i].slot > 4)
+			{
+				d.characters[i].slot = static_cast<BYTE>(i);
+			}
+		}
+	};
 
 	std::string path = GetAccountFilePath(account);
 	std::ifstream file(path, std::ios::binary);
@@ -86,10 +103,11 @@ static bool LoadAccountData(const char* account, SOLO_ACCOUNT_DATA& data)
 				if (fallbackFile.is_open())
 				{
 					fallbackFile.read(reinterpret_cast<char*>(&data), sizeof(data));
-					if (fallbackFile.gcount() == sizeof(data))
+					if (fallbackFile.gcount() > 0)
 					{
 						LogAdd(LOG_BLUE, "[SoloDataServer] Using existing account save '%s' for login '%s'", fname.c_str(), account);
 						std::memcpy(data.account, account, sizeof(data.account));
+						sanitizeAccountData(data);
 						return true;
 					}
 				}
@@ -99,7 +117,12 @@ static bool LoadAccountData(const char* account, SOLO_ACCOUNT_DATA& data)
 	}
 
 	file.read(reinterpret_cast<char*>(&data), sizeof(data));
-	return true;
+	if (file.gcount() > 0)
+	{
+		sanitizeAccountData(data);
+		return true;
+	}
+	return false;
 }
 
 static bool SaveAccountData(const SOLO_ACCOUNT_DATA& data)
@@ -195,6 +218,10 @@ void SoloDataServer_ProcessPacket(BYTE* lpMsg, int size)
 
 					SOLO_ACCOUNT_DATA accData;
 					LoadAccountData(lpSend->account, accData);
+					if (accData.characterCount > 5)
+					{
+						accData.characterCount = 0;
+					}
 
 					BYTE sendBuffer[sizeof(SDHP_CHARACTER_LIST_RECV) + 5 * sizeof(SDHP_CHARACTER_LIST)];
 					std::memset(sendBuffer, 0, sizeof(sendBuffer));
@@ -208,8 +235,9 @@ void SoloDataServer_ProcessPacket(BYTE* lpMsg, int size)
 					auto* pEntries = reinterpret_cast<SDHP_CHARACTER_LIST*>(sendBuffer + sizeof(SDHP_CHARACTER_LIST_RECV));
 					for (int i = 0; i < accData.characterCount; ++i)
 					{
-						pEntries[i].slot = accData.characters[i].slot;
+						pEntries[i].slot = (accData.characters[i].slot < 5) ? accData.characters[i].slot : static_cast<BYTE>(i);
 						std::memcpy(pEntries[i].name, accData.characters[i].name, sizeof(pEntries[i].name));
+						pEntries[i].name[sizeof(pEntries[i].name) - 1] = '\0';
 						pEntries[i].level = accData.characters[i].level;
 						pEntries[i].Class = accData.characters[i].Class;
 						pEntries[i].CtlCode = accData.characters[i].CtlCode;
@@ -387,25 +415,25 @@ void SoloDataServer_ProcessPacket(BYTE* lpMsg, int size)
 						{
 							pRecv.result = 1;
 							pRecv.Class = saved.Class;
-							pRecv.Level = saved.Level;
+							pRecv.Level = (saved.Level == 0) ? 1 : saved.Level;
 							pRecv.LevelUpPoint = saved.LevelUpPoint;
 							pRecv.Experience = saved.Experience;
 							pRecv.Money = saved.Money;
-							pRecv.Strength = saved.Strength;
-							pRecv.Dexterity = saved.Dexterity;
-							pRecv.Vitality = saved.Vitality;
-							pRecv.Energy = saved.Energy;
-							pRecv.Life = saved.Life;
-							pRecv.MaxLife = saved.MaxLife;
-							pRecv.Mana = saved.Mana;
-							pRecv.MaxMana = saved.MaxMana;
+							pRecv.Strength = (saved.Strength == 0) ? 18 : saved.Strength;
+							pRecv.Dexterity = (saved.Dexterity == 0) ? 18 : saved.Dexterity;
+							pRecv.Vitality = (saved.Vitality == 0) ? 15 : saved.Vitality;
+							pRecv.Energy = (saved.Energy == 0) ? 15 : saved.Energy;
+							pRecv.MaxLife = (saved.MaxLife == 0) ? 100 : saved.MaxLife;
+							pRecv.Life = (saved.Life == 0) ? pRecv.MaxLife : saved.Life;
+							pRecv.MaxMana = (saved.MaxMana == 0) ? 50 : saved.MaxMana;
+							pRecv.Mana = (saved.Mana == 0) ? pRecv.MaxMana : saved.Mana;
 							pRecv.BP = saved.BP;
 							pRecv.MaxBP = saved.MaxBP;
 							std::memcpy(pRecv.Inventory, saved.Inventory, sizeof(pRecv.Inventory));
 							std::memcpy(pRecv.Skill, saved.Skill, sizeof(pRecv.Skill));
-							pRecv.Map = saved.Map;
-							pRecv.X = saved.X;
-							pRecv.Y = saved.Y;
+							pRecv.Map = (saved.Map > 30) ? 0 : saved.Map;
+							pRecv.X = (saved.X == 0 && saved.Y == 0) ? 125 : saved.X;
+							pRecv.Y = (saved.X == 0 && saved.Y == 0) ? 125 : saved.Y;
 							pRecv.Dir = saved.Dir;
 							pRecv.PKCount = saved.PKCount;
 							pRecv.PKLevel = saved.PKLevel;
@@ -427,6 +455,10 @@ void SoloDataServer_ProcessPacket(BYTE* lpMsg, int size)
 
 							LogAdd(LOG_GREEN, "[SoloDataServer] Loaded character: %s (Lv: %d, Reset: %d, GrandReset: %d, Map: %d, X: %d, Y: %d)",
 								lpSend->name, pRecv.Level, pRecv.Reset, pRecv.GrandReset, pRecv.Map, pRecv.X, pRecv.Y);
+						}
+						else
+						{
+							LogAdd(LOG_RED, "[SoloDataServer] Character save size mismatch for %s (read %d, expected %d)", lpSend->name, (int)file.gcount(), (int)sizeof(saved));
 						}
 					}
 
@@ -578,8 +610,21 @@ void SoloDataServer_ProcessPacket(BYTE* lpMsg, int size)
 					std::ifstream file(whPath, std::ios::binary);
 					if (file.is_open())
 					{
-						file.read(reinterpret_cast<char*>(&pRecv), sizeof(pRecv));
-						pRecv.index = lpSend->index;
+						SDHP_WAREHOUSE_ITEM_SAVE_SEND savedWh;
+						file.read(reinterpret_cast<char*>(&savedWh), sizeof(savedWh));
+						if (file.gcount() == sizeof(savedWh))
+						{
+							std::memcpy(pRecv.WarehouseItem, savedWh.WarehouseItem, sizeof(pRecv.WarehouseItem));
+							pRecv.WarehouseMoney = savedWh.WarehouseMoney;
+							pRecv.WarehousePassword = static_cast<WORD>(savedWh.WarehousePassword);
+						}
+						else if (file.gcount() == sizeof(SDHP_WAREHOUSE_ITEM_RECV))
+						{
+							file.seekg(0);
+							file.read(reinterpret_cast<char*>(&pRecv), sizeof(pRecv));
+							pRecv.header.set(0x02, 0x02, sizeof(pRecv));
+							pRecv.index = lpSend->index;
+						}
 					}
 
 					gWarehouse.DGWarehouseItemRecv(&pRecv);

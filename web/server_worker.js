@@ -1,5 +1,10 @@
 // Web Worker hosting the compiled MU Online Solo GameServer WebAssembly module
-importScripts('muserver.js');
+const workerParams = (typeof self !== 'undefined' && self.location && self.location.search) 
+    ? new URLSearchParams(self.location.search) 
+    : new URLSearchParams('');
+const WORKER_VERSION = workerParams.get('v') || 'login102';
+
+importScripts(`muserver.js?v=${WORKER_VERSION}`);
 
 let Module = null;
 let tickTimer = null;
@@ -75,18 +80,29 @@ function writeVirtualSaveFiles(savesMap) {
 
     let count = 0;
     try {
-        if (!Module.FS.analyzePath('/saves').exists) {
-            Module.FS.mkdir('/saves');
+        try {
+            if (!Module.FS.analyzePath('/saves').exists) {
+                Module.FS.mkdir('/saves');
+            }
+        } catch (e) {
+            // Directory might already exist
         }
 
         for (const [file, b64] of Object.entries(savesMap)) {
-            const binary = atob(b64);
-            const bytes = new Uint8Array(binary.length);
-            for (let i = 0; i < binary.length; i++) {
-                bytes[i] = binary.charCodeAt(i);
+            try {
+                const safeName = file.replace(/[^a-zA-Z0-9_.-]/g, '');
+                if (!safeName || !b64) continue;
+
+                const binary = atob(b64);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+                Module.FS.writeFile('/saves/' + safeName, bytes);
+                count++;
+            } catch (fileErr) {
+                log(`[Worker] Warning: Failed to write /saves/${file}: ${fileErr.message}`, '#fbbf24');
             }
-            Module.FS.writeFile('/saves/' + file, bytes);
-            count++;
         }
         log(`[Worker] Restored ${count} save file(s) in /saves`, '#34d399');
     } catch (err) {
@@ -261,7 +277,12 @@ async function initServer(initialSaves = null, difficulty = 0) {
         log('[Worker] Instantiating MU WebAssembly GameServer...', '#93c5fd');
 
         Module = await createMuServer({
-            locateFile: (filename) => filename,
+            locateFile: (filename) => {
+                if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+                    return filename;
+                }
+                return `${filename}?v=${WORKER_VERSION}`;
+            },
             print: (text) => log(`[STDOUT] ${text}`, '#94a3b8'),
             printErr: (text) => log(`[STDERR] ${text}`, '#f87171')
         });
@@ -310,7 +331,15 @@ async function initServer(initialSaves = null, difficulty = 0) {
         Module._SoloServer_SetSaveCallback(saveCallback);
 
         log('[Worker] Initializing Game World and Data Files (/Data)...', '#a78bfa');
-        const initResult = Module.ccall('SoloServer_Init', 'number', ['string', 'string'], ['/Data', '/saves']);
+        let initResult = 0;
+        try {
+            initResult = Module.ccall('SoloServer_Init', 'number', ['string', 'string'], ['/Data', '/saves']);
+        } catch (initErr) {
+            log(`[Worker] Fatal exception in SoloServer_Init: ${initErr.message}`, '#ef4444');
+            if (initErr.stack) log(`[Worker] Stack: ${initErr.stack}`, '#ef4444');
+            self.postMessage({ type: 'ERROR', message: initErr.message, stack: initErr.stack });
+            return;
+        }
 
         if (initResult !== 1) {
             log('[Worker] ERROR: SoloServer_Init failed!', '#ef4444');
@@ -342,7 +371,10 @@ async function initServer(initialSaves = null, difficulty = 0) {
         });
     } catch (err) {
         log(`[Worker] Critical Exception: ${err.message}`, '#ef4444');
-        self.postMessage({ type: 'ERROR', message: err.message });
+        if (err.stack) {
+            log(`[Worker] Stack: ${err.stack}`, '#ef4444');
+        }
+        self.postMessage({ type: 'ERROR', message: err.message, stack: err.stack });
     }
 }
 

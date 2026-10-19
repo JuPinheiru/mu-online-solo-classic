@@ -30,6 +30,7 @@ if (EMSCRIPTEN)
 
     target_link_options(muserver PRIVATE
         "-O2"
+        "-sASSERTIONS=1"
         "-sWASM=1"
         "-sALLOW_MEMORY_GROWTH=1"
         "-sINITIAL_MEMORY=64MB"

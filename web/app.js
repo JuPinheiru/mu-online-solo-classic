@@ -349,12 +349,14 @@ window.muInstallAudio = function () {
     }
   }
 
+  const BUILD_VERSION = 'login102';
+
   function initServerWorker(difficulty) {
     if (difficulty === undefined) difficulty = 0;
     if (worker) return;
     currentRealm = difficulty;
     console.log('[SoloBridge] Initializing Server Web Worker for difficulty realm:', difficulty);
-    worker = new Worker('server_worker.js');
+    worker = new Worker(`server_worker.js?v=${BUILD_VERSION}`);
 
     worker.onmessage = function (e) {
       const msg = e.data;
@@ -432,6 +434,11 @@ window.muInstallAudio = function () {
           if (window.muUpdateRealmBadge) {
             window.muUpdateRealmBadge(msg.mode);
           }
+        }
+      } else if (msg.type === 'ERROR' || msg.type === 'SAVE_INTEGRITY_ERROR') {
+        console.error('[SoloBridge] Server Worker Error:', msg.message, msg.stack);
+        if (window.muShowToast) {
+          window.muShowToast(`Server warning: ${msg.message}`);
         }
       }
     };
@@ -909,7 +916,7 @@ var Module = {
       }
     }
   },
-  locateFile: function (path) { return path + '?t=login101'; },
+  locateFile: function (path) { return path + `?t=${BUILD_VERSION}`; },
   preRun: [function () {
     var orig = FS.lookupPath;
     function child(node, name) {
