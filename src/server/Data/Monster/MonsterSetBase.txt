@@ -54,6 +54,7 @@ end
 243	3	0	195	124	2	// Eo the Craftsman
 240	3	0	172	96	3	// Safety Guardian
 238	3	0	180	103	1	// Chaos Goblin
+253	3	0	184	106	3	// Potion Girl Amy
 236	3	0	169	109	3	// Golden Archer
 end
 

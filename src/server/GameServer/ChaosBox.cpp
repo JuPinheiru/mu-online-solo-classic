@@ -1048,9 +1048,9 @@ void CChaosBox::Wing1Mix(LPOBJ lpObj)
 
 		RandomManager.GetRandomElement(&ItemIndex);
 
-		gItemOptionRate.GetItemLuckOption(5, &ItemOption2);
+		gItemOptionRate.GetItemLuckOption(4, &ItemOption2);
 
-		gItemOptionRate.GetItemAddOption(5, &ItemOption3);
+		gItemOptionRate.GetItemAddOption(4, &ItemOption3);
 
 		GDCreateItemSend(lpObj->Index, 0xFF, 0, 0, ItemIndex, 0, 0, 0, ItemOption2, ItemOption3, -1, 0);
 

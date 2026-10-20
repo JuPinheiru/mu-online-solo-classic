@@ -404,7 +404,7 @@ void __cdecl ItemConvert(int pItem, int Attribute1, int Attribute2) {
 
     if (Attribute1 & 4) {
         if ((wType >= 0 && wType < ITEM_WING_ELF && wType != 135 && wType != 143) || (wType >= ITEM_WING_ELF && wType <= ITEM_WING_DARKNESS)) {
-            push_special(64);
+            push_special(64, 5);
         }
     }
 
@@ -459,27 +459,30 @@ void __cdecl ItemConvert(int pItem, int Attribute1, int Attribute2) {
         }
     }
 
+    // Біти excellent збігаються з ItemOption.txt: 1 = перша опція, 32 = шоста.
+    // Щити, броня, кільця.
     if ((wType >= ITEM_SHIELD_BASE && wType < ITEM_WING_ELF) || (wType >= 424 && wType <= 425)) {
-        if (Attribute2 & 0x20) push_special(66);
-        if (Attribute2 & 0x10) push_special(67);
-        if (Attribute2 & 8)    push_special(68);
-        if (Attribute2 & 4)    push_special(69);
-        if (Attribute2 & 2)    push_special(70);
-        if (Attribute2 & 1)    push_special(71);
+        if (Attribute2 & 1)  push_special(66);
+        if (Attribute2 & 2)  push_special(67);
+        if (Attribute2 & 4)  push_special(68);
+        if (Attribute2 & 8)  push_special(69);
+        if (Attribute2 & 16) push_special(70);
+        if (Attribute2 & 32) push_special(71);
     }
 
+    // Зброя і пенданти. 428 = Pendant of Lightning (DW), 429 = Pendant of Fire.
     if ((wType >= 0 && wType < ITEM_SHIELD_BASE) || (wType >= 428 && wType <= 429)) {
-        if (Attribute2 & 0x20) push_special(72);
+        if (Attribute2 & 1) push_special(72);
         if ((wType >= ITEM_STAFF_BASE && wType < ITEM_SHIELD_BASE) || wType == 428) {
-            if (Attribute2 & 0x10) push_special(75, (BYTE)(*(unsigned short*)((BYTE*)CharacterAttribute + 14) / 20));
-            if (Attribute2 & 8)    push_special(76);
+            if (Attribute2 & 2) push_special(75, (BYTE)(*(unsigned short*)((BYTE*)CharacterAttribute + 14) / 20));
+            if (Attribute2 & 4) push_special(76);
         } else {
-            if (Attribute2 & 0x10) push_special(73, (BYTE)(*(unsigned short*)((BYTE*)CharacterAttribute + 14) / 20));
-            if (Attribute2 & 8)    push_special(74);
+            if (Attribute2 & 2) push_special(73, (BYTE)(*(unsigned short*)((BYTE*)CharacterAttribute + 14) / 20));
+            if (Attribute2 & 4) push_special(74);
         }
-        if (Attribute2 & 4) push_special(77, 7);
-        if (Attribute2 & 2) push_special(78);
-        if (Attribute2 & 1) push_special(79);
+        if (Attribute2 & 8)  push_special(77, 7);
+        if (Attribute2 & 16) push_special(78);
+        if (Attribute2 & 32) push_special(79);
     }
 
     const int partType = wType;

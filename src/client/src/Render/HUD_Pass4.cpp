@@ -353,22 +353,6 @@ void Render_QuickButtons_(void)
         }
     }
 
-    if (HUD_IsCharacterInfoRuntime()) {
-        float iconX = (float)DAT_07ea982c + 25.0f;
-        float iconY = (float)DAT_07ea9830 + 395.0f;
-        glColor3f(1.0f, 1.0f, 1.0f);
-        GL_DrawTexture(0x118, iconX, iconY, 24.0f, 24.0f, 0.0f, 0.0f, 0.75f, 0.75f, 1, 1);
-        GL_DrawTexture(280, iconX, iconY, 24.0f, 24.0f,
-                     0.0f, 0.0f, 0.75f, 0.75f, 1, 1);
-        if ((int)MouseX >= (int)iconX && (int)MouseX < (int)(iconX + 24.0f) &&
-            (int)MouseY >= (int)iconY && (int)MouseY < (int)(iconY + 24.0f)) {
-            SelectObject(gFont.GetTextDC(), gFont.GetFont(FONT_NORMAL));
-            m_dwTextColor = 0xFFFFFFFFu;
-            m_dwBackColor = 0xFF000000u;
-            RenderTipText((int)iconX, (int)iconY - 13, GlobalText[225]);
-        }
-    }
-
     // En el original (sub_4F5820) hay 3 `if` sites antes/alrededor de RenderParty
     // que llaman a RenderCharacterInfoWindow/RenderGuildList/RenderGuildCreation
     // cuando los flags correspondientes están seteados.
@@ -383,6 +367,24 @@ void Render_QuickButtons_(void)
     RenderParty(450, 0);
 
     if (HUD_IsCharacterInfoRuntime())  RenderCharacterInfoWindow(panelStartX, 0);
+    // La X se dibuja DESPUÉS del panel: el fondo (texturas 260/261, hasta y=433)
+    // tapa el quad si va primero. El hit-test sigue en Player_InputTick.
+    if (HUD_IsCharacterInfoRuntime()) {
+        float iconX = (float)DAT_07ea982c + 25.0f;
+        float iconY = (float)DAT_07ea9830 + 395.0f;
+        glColor3f(1.0f, 1.0f, 1.0f);
+        EnableAlphaTest(true);
+        GL_DrawTexture(0x118, iconX, iconY, 24.0f, 24.0f, 0.0f, 0.0f, 0.75f, 0.75f, 1, 1);
+        GL_DrawTexture(280, iconX, iconY, 24.0f, 24.0f,
+                     0.0f, 0.0f, 0.75f, 0.75f, 1, 1);
+        if ((int)MouseX >= (int)iconX && (int)MouseX < (int)(iconX + 24.0f) &&
+            (int)MouseY >= (int)iconY && (int)MouseY < (int)(iconY + 24.0f)) {
+            SelectObject(gFont.GetTextDC(), gFont.GetFont(FONT_NORMAL));
+            m_dwTextColor = 0xFFFFFFFFu;
+            m_dwBackColor = 0xFF000000u;
+            RenderTipText((int)iconX, (int)iconY - 13, GlobalText[225]);
+        }
+    }
     // DESVIACION: panel H de horarios en la misma columna (se alterna con los anteriores).
     gEventTimer.RenderPanel();
     RenderInventoryWindow();
