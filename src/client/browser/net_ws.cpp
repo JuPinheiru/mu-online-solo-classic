@@ -149,7 +149,7 @@ extern "C" int mu_net_connect(SOCKET, const void* addr, int len) {
     MuEmu::SetActive(false);
 
     int realmMode = (int)ServerSelectHi;
-    if (realmMode < 0 || realmMode > 2) realmMode = 0;
+    if (realmMode < 0 || realmMode > 5) realmMode = 0;
 
     printf("SOLO: in-memory bridge connect realm=%d\n", realmMode);
     fflush(stdout);

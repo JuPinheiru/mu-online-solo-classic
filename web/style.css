@@ -160,6 +160,36 @@ header.mu-topbar {
   box-shadow: 0 0 8px #ef4444;
 }
 
+.realm-fun-easy {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  color: #c084fc;
+}
+.realm-fun-easy .mu-realm-dot {
+  background: #a855f7;
+  box-shadow: 0 0 8px #a855f7;
+}
+
+.realm-fun-medium {
+  background: rgba(236, 72, 153, 0.15);
+  border: 1px solid rgba(236, 72, 153, 0.45);
+  color: #f472b6;
+}
+.realm-fun-medium .mu-realm-dot {
+  background: #ec4899;
+  box-shadow: 0 0 8px #ec4899;
+}
+
+.realm-fun-hard {
+  background: rgba(244, 63, 94, 0.18);
+  border: 1px solid rgba(244, 63, 94, 0.5);
+  color: #fb7185;
+}
+.realm-fun-hard .mu-realm-dot {
+  background: #f43f5e;
+  box-shadow: 0 0 8px #f43f5e;
+}
+
 /* Right Controls */
 .mu-topbar-right {
   display: flex;
@@ -192,6 +222,7 @@ header.mu-topbar {
   outline: none;
   transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
+  text-decoration: none;
 }
 
 .mu-top-btn:hover {
@@ -1018,6 +1049,21 @@ kbd {
 .mu-realm-card.realm-hard {
   border-color: rgba(239, 68, 68, 0.35);
   background: radial-gradient(circle at top right, rgba(239, 68, 68, 0.08) 0%, rgba(10, 12, 18, 0.6) 80%);
+}
+
+.mu-realm-card.realm-fun-easy {
+  border-color: rgba(168, 85, 247, 0.45);
+  background: radial-gradient(circle at top right, rgba(168, 85, 247, 0.12) 0%, rgba(10, 12, 18, 0.6) 80%);
+}
+
+.mu-realm-card.realm-fun-medium {
+  border-color: rgba(236, 72, 153, 0.45);
+  background: radial-gradient(circle at top right, rgba(236, 72, 153, 0.12) 0%, rgba(10, 12, 18, 0.6) 80%);
+}
+
+.mu-realm-card.realm-fun-hard {
+  border-color: rgba(244, 63, 94, 0.45);
+  background: radial-gradient(circle at top right, rgba(244, 63, 94, 0.12) 0%, rgba(10, 12, 18, 0.6) 80%);
 }
 
 .mu-realm-card-title {

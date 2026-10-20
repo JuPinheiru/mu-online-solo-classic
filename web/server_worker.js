@@ -395,7 +395,14 @@ self.onmessage = async function (e) {
             const mode = payload?.mode ?? 0;
             if (Module && Module._SoloServer_SetDifficulty) {
                 Module._SoloServer_SetDifficulty(mode);
-                const modeNames = ['Easy (300x)', 'Medium (100x)', 'Hard (30x)'];
+                const modeNames = [
+                    'Easy (Arcadia)',
+                    'Medium (Valhalla)',
+                    'Hard (Asgard)',
+                    'Easy FUN (Elysium)',
+                    'Medium FUN (Olympus)',
+                    'Hard FUN (Atlantis)'
+                ];
                 log(`[Worker] Difficulty set to: ${modeNames[mode] || mode}`, '#34d399');
                 self.postMessage({
                     type: 'DIFFICULTY_SET',
@@ -412,7 +419,14 @@ self.onmessage = async function (e) {
             if (Module && Module._SoloServer_SetDifficulty) {
                 Module._SoloServer_SetDifficulty(mode);
             }
-            const modeNames = ['Easy (300x)', 'Medium (100x)', 'Hard (30x)'];
+            const modeNames = [
+                'Easy (Arcadia)',
+                'Medium (Valhalla)',
+                'Hard (Asgard)',
+                'Easy FUN (Elysium)',
+                'Medium FUN (Olympus)',
+                'Hard FUN (Atlantis)'
+            ];
             log(`[Worker] Realm switched to: ${modeNames[mode]}. Loaded ${count} save file(s).`, '#34d399');
             self.postMessage({
                 type: 'REALM_SWITCHED',

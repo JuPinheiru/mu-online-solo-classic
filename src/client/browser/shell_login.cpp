@@ -557,7 +557,7 @@ int main(void) {
     if (lpString_07d4aed4[0] == 0) strcpy(lpString_07d4aed4, "OK");
     if (lpString_07d4b000[0] == 0) strcpy(lpString_07d4b000, "Cancel");
 
-    // ── 3 Solo Difficulty Realms ──────────────────────────────────────────────
+    // ── 6 Solo Difficulty Realms (Classic + FUN) ─────────────────────────────
     memset(DAT_083a45d8, 0, sizeof(DAT_083a45d8));
     ServerSelectHi = (DWORD)-1;
     ServerSelectLo = (DWORD)-1;
@@ -582,6 +582,27 @@ int main(void) {
     srv2[0x14] = 1;                         // 1 channel
     *(unsigned short*)(srv2 + 0x2c) = 2;   // channel_id 2 (Hard)
     srv2[0x2e] = 75;                       // load 75% (green)
+
+    // 🟣 Realm 3: Easy FUN (300x EXP, Top Gear, Wings & Kundun Boxes in Shops)
+    char* srv3 = DAT_083a45d8 + 3 * 0x21e;
+    memcpy(srv3, "Elysium [Easy FUN]", 19);
+    srv3[0x14] = 1;                         // 1 channel
+    *(unsigned short*)(srv3 + 0x2c) = 3;   // channel_id 3 (Easy FUN)
+    srv3[0x2e] = 25;                       // load 25% (green)
+
+    // 🟣 Realm 4: Medium FUN (100x EXP, Top Gear, Wings & Kundun Boxes in Shops)
+    char* srv4 = DAT_083a45d8 + 4 * 0x21e;
+    memcpy(srv4, "Olympus [Med FUN]", 18);
+    srv4[0x14] = 1;                         // 1 channel
+    *(unsigned short*)(srv4 + 0x2c) = 4;   // channel_id 4 (Medium FUN)
+    srv4[0x2e] = 50;                       // load 50% (green)
+
+    // 🟣 Realm 5: Hard FUN (30x EXP, Top Gear, Wings & Kundun Boxes in Shops)
+    char* srv5 = DAT_083a45d8 + 5 * 0x21e;
+    memcpy(srv5, "Atlantis [Hard FUN]", 20);
+    srv5[0x14] = 1;                         // 1 channel
+    *(unsigned short*)(srv5 + 0x2c) = 5;   // channel_id 5 (Hard FUN)
+    srv5[0x2e] = 75;                       // load 75% (green)
 
     // WinMain fills RandomTable before anything else calls rand(). The browser
     // never enters WinMain, so the table stayed zero and every Zen coin of a

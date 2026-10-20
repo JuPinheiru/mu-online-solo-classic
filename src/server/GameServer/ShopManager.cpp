@@ -69,13 +69,13 @@ void CShopManager::Load(const char* path)
 	delete lpReadScript;
 }
 
-void CShopManager::LoadShop()
+void CShopManager::LoadShop(const char* subFolder)
 {
 	std::map<int, int> LoadShop;
 
 	char wildcard_path[MAX_PATH];
 
-	wsprintf(wildcard_path, "%s*", gPath.GetFullPath("Shop\\"));
+	wsprintf(wildcard_path, "%s*", gPath.GetFullPath(subFolder));
 
 	WIN32_FIND_DATA data;
 
@@ -102,7 +102,7 @@ void CShopManager::LoadShop()
 						{
 							char path[MAX_PATH];
 
-							wsprintf(path, "Shop\\%s", data.cFileName);
+							wsprintf(path, "%s%s", subFolder, data.cFileName);
 
 							it->second.Shop.Load(gPath.GetFullPath(path));
 

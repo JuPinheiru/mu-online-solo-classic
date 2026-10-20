@@ -462,7 +462,7 @@ window.muInstallAudio = function () {
     },
     connect: function (realmMode) {
       console.log('[SoloBridge] Client requested GameServer connect for realm:', realmMode);
-      if (realmMode === undefined || realmMode === null || realmMode < 0 || realmMode > 2) {
+      if (realmMode === undefined || realmMode === null || realmMode < 0 || realmMode > 5) {
         realmMode = 0;
       }
       currentRealm = realmMode;
@@ -703,9 +703,12 @@ window.muUpdateRealmBadge = function (mode) {
   var badge = document.getElementById('muRealmBadge');
   if (!lbl || !badge) return;
   var modes = [
-    { name: 'EASY (300x)', class: 'realm-easy', title: 'Server Realm: Easy (300x EXP Rate, 150% Drops, Level 300 Reset)' },
-    { name: 'MEDIUM (100x)', class: 'realm-medium', title: 'Server Realm: Medium (100x EXP Rate, 100% Drops, Level 400 Reset)' },
-    { name: 'HARD (30x)', class: 'realm-hard', title: 'Server Realm: Hard (30x EXP Rate, 50% Drops, Level 400 Reset)' }
+    { name: 'ARCADIA [EASY] (300x)', class: 'realm-easy', title: 'Server Realm: Arcadia [Easy] (300x EXP Rate, 150% Drops, Level 300 Reset)' },
+    { name: 'VALHALLA [MED] (100x)', class: 'realm-medium', title: 'Server Realm: Valhalla [Medium] (100x EXP Rate, 100% Drops, Level 400 Reset)' },
+    { name: 'ASGARD [HARD] (30x)', class: 'realm-hard', title: 'Server Realm: Asgard [Hard] (30x EXP Rate, 50% Drops, Level 400 Reset)' },
+    { name: 'ELYSIUM [FUN] (300x)', class: 'realm-fun-easy', title: 'Server Realm: Elysium [Easy FUN] (300x EXP, Top Shop Gear, Wings & Kundun Boxes)' },
+    { name: 'OLYMPUS [FUN] (100x)', class: 'realm-fun-medium', title: 'Server Realm: Olympus [Med FUN] (100x EXP, Top Shop Gear, Wings & Kundun Boxes)' },
+    { name: 'ATLANTIS [FUN] (30x)', class: 'realm-fun-hard', title: 'Server Realm: Atlantis [Hard FUN] (30x EXP, Top Shop Gear, Wings & Kundun Boxes)' }
   ];
   var m = modes[mode] || modes[0];
   lbl.textContent = m.name;

@@ -23,7 +23,7 @@ public:
 
 	void Load(const char* path);
 
-	void LoadShop();
+	void LoadShop(const char* subFolder = "Shop\\");
 
 	void ReloadShopInterface();
 

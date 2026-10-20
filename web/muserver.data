@@ -9929,6 +9929,308 @@ end//==============================================================
 14 4 0 255 0 0 0 0 5 0 // Small Mana Potion
 14 5 0 255 0 0 0 0 6 0 // Medium Mana Potion
 14 6 0 255 0 0 0 0 7 0 // Large Mana Potion
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+7 5 0 -1 0 1 1 0 0 0 // Scale Boots
+8 5 0 -1 0 1 1 0 0 2 // Scale Boots
+9 5 0 -1 0 1 1 0 0 7 // Scale Boots
+10 5 0 -1 0 1 1 0 0 5 // Scale Boots
+11 5 0 -1 0 1 1 0 0 9 // Scale Boots
+7 0 0 -1 0 0 0 0 2 0 // Scale Gloves
+8 0 0 -1 0 0 0 0 2 2 // Scale Gloves
+9 0 0 -1 0 0 0 0 2 6 // Scale Gloves
+10 0 0 -1 0 0 0 0 2 4 // Scale Gloves
+11 0 0 -1 0 0 0 0 2 8 // Scale Gloves
+0 1 0 -1 1 1 1 0 4 0 // Scale Boots
+0 4 0 -1 1 1 1 0 5 0 // Scale Boots
+0 8 0 -1 1 1 1 0 6 0 // Serpent Sword
+1 2 0 -1 1 1 1 0 7 0 // Double Axe
+6 4 0 -1 1 1 1 0 4 3 // Buckler
+6 1 0 -1 1 1 1 0 6 3 // Horn Shield
+12 7 0 -1 0 0 1 0 4 5 // Orb of Twisting Slash
+12 13 0 -1 0 0 1 0 5 5 // Orb of Impale
+12 12 0 -1 0 0 1 0 6 5 // Orb of Impale
+12 19 0 -1 0 0 1 0 7 5 // Orb of Impale
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+14 1 0 255 0 0 0 0 0 0 // Small Healing Potion
+14 2 0 255 0 0 0 0 1 0 // Medium Healing Potion
+14 3 0 255 0 0 0 0 2 0 // Large Healing Potion
+14 4 0 255 0 0 0 0 3 0 // Small Mana Potion
+14 5 0 255 0 0 0 0 4 0 // Medium Mana Potion
+14 6 0 255 0 0 0 0 5 0 // Large Mana Potion
+14 8 0 3 0 0 0 0 6 0 // Antidote
+14 10 0 -1 0 0 0 0 7 0 // Town Portal Scroll
+14 0 0 -1 0 0 0 0 0 1 // Apple
+12 15 0 -1 0 0 0 0 1 1 // Apple
+14 13 0 -1 0 0 0 0 2 1 // Apple
+14 14 0 -1 0 0 0 0 3 1 // Apple
+14 16 0 -1 0 0 0 0 4 1 // Apple
+14 22 0 -1 0 0 0 0 5 1 // Apple
+14 11 0 -1 0 0 0 0 6 1 // Apple
+14 11 1 -1 0 0 0 0 0 2 // Apple
+14 11 3 -1 0 0 0 0 1 2 // Apple
+14 11 5 -1 0 0 0 0 2 2 // Apple
+14 11 6 -1 0 0 0 0 3 2 // Apple
+14 11 7 -1 0 0 0 0 4 2 // Apple
+14 11 8 -1 0 0 0 0 5 2 // Kundun Box +1
+14 11 9 -1 0 0 0 0 6 2 // Kundun Box +2
+14 11 10 -1 0 0 0 0 7 2 // Kundun Box +3
+14 11 11 -1 0 0 0 0 0 3 // Kundun Box +4
+14 11 12 -1 0 0 0 0 1 3 // Kundun Box +5
+14 17 1 -1 0 0 0 0 2 3 // Apple
+14 17 2 -1 0 0 0 0 3 3 // Apple
+14 17 3 -1 0 0 0 0 4 3 // Apple
+14 17 4 -1 0 0 0 0 5 3 // Apple
+14 18 1 -1 0 0 0 0 6 3 // Apple
+14 18 2 -1 0 0 0 0 7 3 // Apple
+14 18 3 -1 0 0 0 0 0 4 // Apple
+14 18 4 -1 0 0 0 0 1 4 // Apple
+14 19 4 -1 0 0 0 0 5 4 // Apple
+14 19 3 -1 0 0 0 0 4 4 // Apple
+14 19 2 -1 0 0 0 0 3 4 // Apple
+14 19 1 -1 0 0 0 0 2 4 // Apple
+13 18 1 -1 0 0 0 0 6 4 // Apple
+13 18 2 -1 0 0 0 0 0 5 // Apple
+13 18 3 -1 0 0 0 0 2 5 // Apple
+13 18 4 -1 0 0 0 0 4 5 // Apple
+13 18 5 -1 0 0 0 0 6 6 // Apple
+13 18 6 -1 0 0 0 0 6 8 // Apple
+13 17 6 -1 0 0 0 0 5 7 // Apple
+13 17 5 -1 0 0 0 0 4 7 // Apple
+13 17 4 -1 0 0 0 0 3 7 // Apple
+13 17 3 -1 0 0 0 0 2 7 // Apple
+13 17 2 -1 0 0 0 0 1 7 // Apple
+13 17 1 -1 0 0 0 0 0 7 // Apple
+13 16 1 -1 0 0 0 0 0 9 // Apple
+13 16 2 -1 0 0 0 0 1 9 // Apple
+13 16 3 -1 0 0 0 0 2 9 // Apple
+13 16 4 -1 0 0 0 0 3 9 // Apple
+13 16 5 -1 0 0 0 0 4 9 // Apple
+13 16 6 -1 0 0 0 0 5 9 // Apple
+13 14 0 -1 0 0 0 0 0 11 // Apple
+4 15 0 -1 0 0 0 0 6 10 // Apple
+4 15 3 -1 0 0 0 0 7 10 // Apple
+4 7 3 -1 0 0 0 0 2 11 // Apple
+4 7 0 -1 0 0 0 0 1 11 // Apple
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+15 0 0 -1 0 0 0 0 0 0 // Scroll of Poison
+15 1 0 -1 0 0 0 0 1 0 // Scroll of Meteorite
+15 2 0 -1 0 0 0 0 2 0 // Scroll of Meteorite
+15 3 0 -1 0 0 0 0 3 0 // Scroll of Meteorite
+15 4 0 -1 0 0 0 0 4 0 // Scroll of Meteorite
+15 5 0 -1 0 0 0 0 5 0 // Scroll of Meteorite
+15 6 0 -1 0 0 0 0 6 0 // Scroll of Meteorite
+15 7 0 -1 0 0 0 0 7 0 // Scroll of Meteorite
+7 2 0 -1 1 1 1 0 0 2 // Pad Helm
+8 2 0 -1 1 1 1 0 0 4 // Pad Helm
+9 2 0 -1 1 1 1 0 0 8 // Pad Helm
+10 2 0 -1 1 1 1 0 0 6 // Pad Helm
+11 2 0 -1 1 1 1 0 0 10 // Pad Helm
+7 4 0 -1 1 1 1 0 2 2 // Pad Helm
+8 4 0 -1 1 1 1 0 2 4 // Pad Helm
+9 4 0 -1 1 1 1 0 2 8 // Pad Helm
+10 4 0 -1 1 1 1 0 2 6 // Pad Helm
+11 4 0 -1 1 1 1 0 2 10 // Pad Helm
+5 0 0 -1 1 1 1 0 4 2 // Pad Helm
+5 1 0 -1 1 1 1 0 5 2 // Pad Helm
+5 2 0 -1 1 1 1 0 4 5 // Pad Helm
+6 0 0 -1 1 1 1 0 4 8 // Pad Helm
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+3 6 7 -1 1 1 0 0 0 0 // Halberd
+3 7 7 -1 1 1 0 0 2 0 // Berdysh
+7 9 0 -1 1 1 0 0 4 0 // Plate Helm
+8 9 0 -1 1 1 0 0 4 2 // Plate Armor
+9 9 0 -1 1 1 0 0 4 4 // Plate Pants
+10 9 0 -1 1 1 0 0 4 6 // Plate Gloves
+11 9 0 -1 1 1 0 0 4 8 // Plate Boots
+6 9 0 -1 1 1 0 0 6 0 // Plate Shield
+15 5 0 -1 0 0 0 0 6 2 // Scroll of Teleport
+15 14 0 -1 0 0 0 0 7 2 // Scroll of Teleport Ally
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+0 19 0 -1 1 1 0 0 0 0 // Sword of Destruction
+0 16 0 -1 1 1 0 0 2 0 // Sword of Archangel
+0 18 0 -1 1 1 0 0 4 0 // Thunder Sword
+0 31 0 -1 1 1 0 0 6 0 // Rune Blade
+12 16 0 -1 0 0 0 0 5 3 // Orb of Fire Slash
+12 7 0 -1 0 0 0 0 4 3 // Orb of Twisting Slash
+0 0 11 -1 1 1 24 63 2 4 // Kris
+0 10 11 -1 1 1 24 63 2 0 // Light Saber
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+14 1 0 255 0 0 0 0 0 0 // Small Healing Potion
+14 2 0 255 0 0 0 0 1 0 // Medium Healing Potion
+14 3 0 255 0 0 0 0 2 0 // Large Healing Potion
+14 4 0 255 0 0 0 0 3 0 // Small Mana Potion
+14 5 0 255 0 0 0 0 4 0 // Medium Mana Potion
+14 6 0 255 0 0 0 0 5 0 // Large Mana Potion
+14 10 0 -1 0 0 0 0 7 0 // Town Portal Scroll
+14 8 0 0 0 0 0 0 6 0 // Antidote
+12 0 0 -1 0 0 0 0 5 2 // Wings of Elf
+12 1 0 -1 0 0 0 0 0 1 // Wings of Heaven
+12 2 0 -1 0 0 0 0 0 4 // Wings of Satan
+14 0 0 -1 0 0 0 0 5 1 // Apple
+14 22 0 -1 0 0 0 0 6 1 // Jewel of Creation
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+13 2 0 -1 0 0 0 0 6 0 // Horn of Uniria
+13 1 0 -1 0 0 0 0 6 1 // Imp
+13 0 0 -1 0 0 0 0 7 1 // Guardian Angel
+7 19 11 -1 1 1 24 63 0 0 // Divine Helm
+8 19 11 -1 1 1 24 63 0 2 // Divine Armor
+9 19 11 -1 1 1 24 63 0 6 // Divine Pants
+10 19 11 -1 1 1 24 63 0 4 // Divine Gloves
+11 19 11 -1 1 1 24 63 0 8 // Divine Boots
+7 16 11 -1 1 1 24 63 2 0 // Black Dragon Helm
+8 16 11 -1 1 1 24 63 2 2 // Black Dragon Armor
+9 16 11 -1 1 1 24 63 2 7 // Black Dragon Pants
+10 16 11 -1 1 1 24 63 2 5 // Black Dragon Gloves
+11 16 11 -1 1 1 24 63 2 9 // Black Dragon Boots
+7 18 11 -1 1 1 24 63 4 0 // Grand Soul Helm
+8 18 11 -1 1 1 24 63 4 2 // Grand Soul Armor
+9 18 11 -1 1 1 24 63 4 7 // Grand Soul Pants
+10 18 11 -1 1 1 24 63 4 5 // Grand Soul Gloves
+11 18 11 -1 1 1 24 63 4 9 // Grand Soul Boots
+13 3 0 -1 0 0 0 0 7 0 // Horn of Dinorant
+8 20 11 -1 1 1 24 63 6 2 // Thunder Hawk Armor
+9 20 11 -1 1 1 24 63 6 7 // Thunder Hawk Pants
+10 20 11 -1 1 1 24 63 6 5 // Thunder Hawk Gloves
+11 20 11 -1 1 1 24 63 6 9 // Thunder Hawk Boots
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+15 8 0 -1 0 0 0 0 2 0 // Scroll of Evil Spirit
+15 9 0 -1 0 0 0 0 3 0 // Scroll of Hellfire
+15 10 0 -1 0 0 0 0 4 0 // Scroll of Power Wave
+15 11 0 -1 0 0 0 0 5 0 // Scroll of Aqua Beam
+15 12 0 -1 0 0 0 0 6 0 // Scroll of Cometfall
+15 13 0 -1 0 0 0 0 7 0 // Scroll of Inferno
+15 14 0 -1 0 0 0 0 6 2 // Scroll of Teleport Ally
+15 15 0 -1 0 0 0 0 7 2 // Scroll of Soul Barrier
+7 3 0 -1 1 1 4 0 0 0 // Legendary Helm
+8 3 0 -1 1 1 4 0 0 2 // Legendary Armor
+9 3 0 -1 1 1 4 0 0 6 // Legendary Pants
+10 3 0 -1 1 1 4 0 0 4 // Legendary Gloves
+11 3 0 -1 1 1 4 0 0 8 // Legendary Boots
+5 5 0 -1 1 1 4 0 2 6 // Legendary Staff
+6 14 0 -1 1 1 4 0 4 2 // Legendary Shield
+5 7 0 -1 1 1 4 0 2 2 // Chaos Lightning Staff
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+4 5 7 -1 1 1 0 0 0 0 // Silver Bow +7
+5 3 7 -1 1 1 0 0 2 0 // Thunder Staff
+3 10 7 -1 1 1 0 0 4 0 // Dragon Spear
+3 0 7 -1 1 1 0 0 6 0 // Light Spear
+4 16 7 -1 1 1 0 0 0 4 // Saint Crossbow
+4 14 7 -1 1 1 0 0 0 8 // Aquagold Crossbow
+2 6 7 -1 1 1 0 0 2 4 // Chaos Dragon Axe
+1 8 7 -1 1 1 0 0 2 8 // Crescent Axe
+2 5 7 -1 1 1 0 0 4 4 // Crystal Sword
+3 9 7 -1 1 1 0 0 6 4 // Bill of Balrog
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+4 0 0 -1 1 1 0 0 0 0 // Short Bow
+4 1 0 -1 1 1 0 0 2 0 // Bow
+4 2 0 -1 1 1 0 0 4 0 // Elven Bow
+4 3 0 -1 1 1 0 0 6 0 // Battle Bow
+4 8 0 -1 1 1 0 0 0 3 // Crossbow
+4 9 0 -1 1 1 0 0 2 3 // Golden Crossbow
+4 11 0 -1 1 1 0 0 4 3 // Light Crossbow
+4 12 0 -1 1 1 0 0 6 3 // Serpent Crossbow
+6 16 0 -1 1 1 0 0 0 5 // Elemental Shield
+4 7 0 -1 0 0 0 0 2 5 // Bolts
+4 15 0 -1 0 0 0 0 3 5 // Arrows
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+7 10 0 -1 1 1 4 0 0 0 // Vine Helm
+8 10 0 -1 1 1 4 0 0 2 // Vine Armor
+9 10 0 -1 1 1 4 0 0 6 // Vine Pants
+10 10 0 -1 1 1 4 0 0 4 // Vine Gloves
+11 10 0 -1 1 1 4 0 0 8 // Vine Boots
+7 12 0 -1 1 1 4 0 4 0 // Wind Helm
+8 12 0 -1 1 1 4 0 4 2 // Wind Armor
+9 12 0 -1 1 1 4 0 4 6 // Wind Pants
+10 12 0 -1 1 1 4 0 4 4 // Wind Gloves
+11 12 0 -1 1 1 4 0 4 8 // Wind Boots
+11 11 0 -1 1 1 4 0 2 8 // Silk Boots
+10 11 0 -1 1 1 4 0 2 4 // Silk Gloves
+9 11 0 -1 1 1 4 0 2 6 // Silk Pants
+8 11 0 -1 1 1 4 0 2 2 // Silk Armor
+7 11 0 -1 1 1 4 0 2 0 // Silk Helm
+12 8 0 -1 0 0 0 0 6 0 // Healing Orb
+12 9 0 -1 0 0 0 0 7 0 // Healing Orb
+12 10 0 -1 0 0 0 0 6 1 // Healing Orb
+12 11 0 -1 0 0 0 0 7 1 // Orb of Summoning
+12 11 1 -1 0 0 0 0 6 2 // Orb of Summoning
+12 11 2 -1 0 0 0 0 7 2 // Orb of Summoning
+12 11 3 -1 0 0 0 0 6 3 // Orb of Summoning
+12 11 4 -1 0 0 0 0 7 3 // Orb of Summoning
+12 17 0 -1 0 0 0 0 6 4 // Orb of Penetration
+12 18 0 -1 0 0 0 0 7 4 // Orb of Ice Arrow
+2 7 0 -1 1 1 0 0 6 5 // Elemental Mace
+2 0 0 -1 1 1 0 0 7 5 // Mace
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+14 9 0 -1 0 0 0 0 0 0 // Ale
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+13 14 0 -1 0 0 0 0 0 0 // Loch's Feather
+14 9 0 -1 0 0 0 0 1 0 // Ale
+14 10 0 -1 0 0 0 0 2 0 // Town Portal Scroll
+end//==============================================================
+// SHOP
+//==============================================================
+//SLOTS X = 0~7 , Y = 0~14 , * = Orden original
+//Index	Level	Dur	Skill	Luck	Option	ExcOp	SlotX	SlotY	Comment
+4 7 0 -1 0 0 0 0 0 0 // Bolts
+4 15 0 -1 0 0 0 0 1 0 // Arrows
+14 1 0 255 0 0 0 0 2 0 // Small Healing Potion
+14 2 0 255 0 0 0 0 3 0 // Medium Healing Potion
+14 3 0 255 0 0 0 0 4 0 // Large Healing Potion
+14 4 0 255 0 0 0 0 5 0 // Small Mana Potion
+14 5 0 255 0 0 0 0 6 0 // Medium Mana Potion
+14 6 0 255 0 0 0 0 7 0 // Large Mana Potion
 end//Index		MonsterClass	Comment
 0		251		//Hanzo the Blacksmith
 1		255		//Liaman the Barmaid

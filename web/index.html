@@ -67,9 +67,9 @@
           <span class="mu-brand-sep">/</span>
           <span class="mu-brand-desc">SOLO CLASSIC 0.97K</span>
         </div>
-        <div class="mu-realm-badge realm-easy" id="muRealmBadge" title="Server Realm: Easy (300x EXP Rate, 150% Drops, Level 300 Reset)">
+        <div class="mu-realm-badge realm-easy" id="muRealmBadge" title="Server Realm: Arcadia [Easy] (300x EXP Rate, 150% Drops, Level 300 Reset)">
           <span class="mu-realm-dot"></span>
-          <span class="mu-realm-label" id="muRealmLabel">EASY (300x)</span>
+          <span class="mu-realm-label" id="muRealmLabel">ARCADIA [EASY] (300x)</span>
         </div>
       </div>
 
@@ -129,6 +129,27 @@
           </svg>
           <span class="mu-btn-text">Info</span>
         </button>
+
+        <div class="mu-top-sep"></div>
+
+        <!-- GitHub Issues Link -->
+        <a id="muLinkIssues" class="mu-top-btn" href="https://github.com/andvolodko/mu-online-solo-classic/issues" target="_blank" rel="noopener noreferrer" title="GitHub Issues (Report bugs & feature requests)" aria-label="GitHub Issues">
+          <svg class="mu-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span class="mu-btn-text">Issues</span>
+        </a>
+
+        <!-- GitHub Discussions Link -->
+        <a id="muLinkDiscussions" class="mu-top-btn" href="https://github.com/andvolodko/mu-online-solo-classic/discussions" target="_blank" rel="noopener noreferrer" title="GitHub Discussions (Community chat & ideas)" aria-label="GitHub Discussions">
+          <svg class="mu-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 9a2 2 0 0 1-2 2H6l-3 3V4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2z"></path>
+            <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"></path>
+          </svg>
+          <span class="mu-btn-text">Discussions</span>
+        </a>
 
         <!-- Fullscreen Button -->
         <button id="muBtnFullscreen" class="mu-top-btn" type="button" title="Fullscreen (Toggle full screen)" aria-label="Fullscreen">
@@ -322,40 +343,79 @@
             <p class="mu-section-sub">Each realm has completely isolated characters, inventories, and vaults tailored to your playstyle.</p>
             <div class="mu-realms-grid">
               <div class="mu-realm-card realm-easy">
-                <div class="mu-realm-card-title">🟢 Easy Realm</div>
-                <div class="mu-realm-rate">300x EXP Rate</div>
+                <div class="mu-realm-card-title">🟢 Arcadia [Easy]</div>
+                <div class="mu-realm-rate">300x EXP Rate &bull; Classic</div>
                 <ul class="mu-card-perks">
                   <li><strong>Reset Level:</strong> Level 300</li>
                   <li><strong>Item Drop Rate:</strong> 150% (High drop rate)</li>
                   <li><strong>Zen Drop Rate:</strong> 100%</li>
                   <li><strong>Monster Damage & HP:</strong> 0.7x (Soft monsters)</li>
-                  <li><strong>Death Penalty:</strong> None (0% EXP lost on death)</li>
+                  <li><strong>NPC Shops:</strong> Standard Classic</li>
                   <li><strong>Grand Reset:</strong> 50 Resets</li>
                 </ul>
               </div>
 
               <div class="mu-realm-card realm-medium">
-                <div class="mu-realm-card-title">🟡 Medium Realm</div>
-                <div class="mu-realm-rate">100x EXP Rate</div>
+                <div class="mu-realm-card-title">🟡 Valhalla [Medium]</div>
+                <div class="mu-realm-rate">100x EXP Rate &bull; Classic</div>
                 <ul class="mu-card-perks">
                   <li><strong>Reset Level:</strong> Level 400</li>
                   <li><strong>Item Drop Rate:</strong> 100% (Balanced)</li>
                   <li><strong>Zen Drop Rate:</strong> 50%</li>
                   <li><strong>Monster Damage & HP:</strong> 1.0x (Classic authentic)</li>
-                  <li><strong>Death Penalty:</strong> Normal (3% EXP lost on death)</li>
+                  <li><strong>NPC Shops:</strong> Standard Classic</li>
                   <li><strong>Grand Reset:</strong> 100 Resets</li>
                 </ul>
               </div>
 
               <div class="mu-realm-card realm-hard">
-                <div class="mu-realm-card-title">🔴 Hard Realm</div>
-                <div class="mu-realm-rate">30x EXP Rate</div>
+                <div class="mu-realm-card-title">🔴 Asgard [Hard]</div>
+                <div class="mu-realm-rate">30x EXP Rate &bull; Hardcore</div>
                 <ul class="mu-card-perks">
                   <li><strong>Reset Level:</strong> Level 400</li>
                   <li><strong>Item Drop Rate:</strong> 50% (Rare drops)</li>
                   <li><strong>Zen Drop Rate:</strong> 25%</li>
                   <li><strong>Monster Damage & HP:</strong> 1.5x (Dangerous mobs)</li>
-                  <li><strong>Death Penalty:</strong> Double (6% EXP lost on death)</li>
+                  <li><strong>NPC Shops:</strong> Standard Classic</li>
+                  <li><strong>Grand Reset:</strong> 150 Resets</li>
+                </ul>
+              </div>
+
+              <div class="mu-realm-card realm-fun-easy">
+                <div class="mu-realm-card-title">🟣 Elysium [Easy FUN]</div>
+                <div class="mu-realm-rate">300x EXP Rate &bull; FUN Mode</div>
+                <ul class="mu-card-perks">
+                  <li><strong>Reset Level:</strong> Level 300</li>
+                  <li><strong>Item Drop Rate:</strong> 150%</li>
+                  <li><strong>Zen Drop Rate:</strong> 100%</li>
+                  <li><strong>Monster Damage & HP:</strong> 0.7x</li>
+                  <li><strong>NPC Shops:</strong> Top Gear, Wings & Kundun Boxes</li>
+                  <li><strong>Grand Reset:</strong> 50 Resets</li>
+                </ul>
+              </div>
+
+              <div class="mu-realm-card realm-fun-medium">
+                <div class="mu-realm-card-title">🌸 Olympus [Med FUN]</div>
+                <div class="mu-realm-rate">100x EXP Rate &bull; FUN Mode</div>
+                <ul class="mu-card-perks">
+                  <li><strong>Reset Level:</strong> Level 400</li>
+                  <li><strong>Item Drop Rate:</strong> 100%</li>
+                  <li><strong>Zen Drop Rate:</strong> 50%</li>
+                  <li><strong>Monster Damage & HP:</strong> 1.0x</li>
+                  <li><strong>NPC Shops:</strong> Top Gear, Wings & Kundun Boxes</li>
+                  <li><strong>Grand Reset:</strong> 100 Resets</li>
+                </ul>
+              </div>
+
+              <div class="mu-realm-card realm-fun-hard">
+                <div class="mu-realm-card-title">🌺 Atlantis [Hard FUN]</div>
+                <div class="mu-realm-rate">30x EXP Rate &bull; FUN Mode</div>
+                <ul class="mu-card-perks">
+                  <li><strong>Reset Level:</strong> Level 400</li>
+                  <li><strong>Item Drop Rate:</strong> 50%</li>
+                  <li><strong>Zen Drop Rate:</strong> 25%</li>
+                  <li><strong>Monster Damage & HP:</strong> 1.5x</li>
+                  <li><strong>NPC Shops:</strong> Top Gear, Wings & Kundun Boxes</li>
                   <li><strong>Grand Reset:</strong> 150 Resets</li>
                 </ul>
               </div>

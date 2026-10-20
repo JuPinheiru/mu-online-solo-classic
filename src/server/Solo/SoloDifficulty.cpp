@@ -2,6 +2,7 @@
 #include "SoloDifficulty.h"
 #include "ServerInfo.h"
 #include "ServerDisplayer.h"
+#include "ShopManager.h"
 #include "Util.h"
 #include "Log.h"
 
@@ -20,8 +21,8 @@ SOLO_DIFFICULTY_CONFIG g_SoloDifficulty = {
 	1.5f   // excDropRate (1.5x)
 };
 
-static const SOLO_DIFFICULTY_CONFIG kDifficultyPresets[3] = {
-	// 0: 🟢 Easy
+static const SOLO_DIFFICULTY_CONFIG kDifficultyPresets[6] = {
+	// 0: 🟢 Easy (Arcadia)
 	{
 		300,   // expRate
 		300,   // eventExpRate
@@ -34,7 +35,7 @@ static const SOLO_DIFFICULTY_CONFIG kDifficultyPresets[3] = {
 		0.0f,  // deathExpPenalty (None)
 		1.5f   // excDropRate
 	},
-	// 1: 🟡 Medium
+	// 1: 🟡 Medium (Valhalla)
 	{
 		100,   // expRate
 		100,   // eventExpRate
@@ -47,7 +48,46 @@ static const SOLO_DIFFICULTY_CONFIG kDifficultyPresets[3] = {
 		0.03f, // deathExpPenalty (Normal 3%)
 		1.0f   // excDropRate
 	},
-	// 2: 🔴 Hard
+	// 2: 🔴 Hard (Asgard)
+	{
+		30,    // expRate
+		30,    // eventExpRate
+		50,    // itemDropRate
+		25,    // zenDropRate
+		400,   // resetLevel
+		150,   // grandResetResets
+		1.5f,  // monsterHpRate
+		1.5f,  // monsterDmgRate
+		0.06f, // deathExpPenalty (Double 6%)
+		0.5f   // excDropRate
+	},
+	// 3: 🟣 Easy FUN (Elysium) - same stats as Easy, with FUN shops
+	{
+		300,   // expRate
+		300,   // eventExpRate
+		150,   // itemDropRate
+		100,   // zenDropRate
+		300,   // resetLevel
+		50,    // grandResetResets
+		0.7f,  // monsterHpRate
+		0.7f,  // monsterDmgRate
+		0.0f,  // deathExpPenalty (None)
+		1.5f   // excDropRate
+	},
+	// 4: 🟣 Medium FUN (Olympus) - same stats as Medium, with FUN shops
+	{
+		100,   // expRate
+		100,   // eventExpRate
+		100,   // itemDropRate
+		50,    // zenDropRate
+		400,   // resetLevel
+		100,   // grandResetResets
+		1.0f,  // monsterHpRate
+		1.0f,  // monsterDmgRate
+		0.03f, // deathExpPenalty (Normal 3%)
+		1.0f   // excDropRate
+	},
+	// 5: 🟣 Hard FUN (Atlantis) - same stats as Hard, with FUN shops
 	{
 		30,    // expRate
 		30,    // eventExpRate
@@ -64,7 +104,7 @@ static const SOLO_DIFFICULTY_CONFIG kDifficultyPresets[3] = {
 
 void SoloDifficulty_Apply(SOLO_DIFFICULTY_MODE mode)
 {
-	if (mode < SOLO_DIFFICULTY_EASY || mode > SOLO_DIFFICULTY_HARD)
+	if (mode < SOLO_DIFFICULTY_EASY || mode > SOLO_DIFFICULTY_HARD_FUN)
 	{
 		mode = SOLO_DIFFICULTY_EASY;
 	}
@@ -86,12 +126,18 @@ void SoloDifficulty_Apply(SOLO_DIFFICULTY_MODE mode)
 	// Strictly disable player-to-player trade
 	gServerInfo.m_TradeSwitch = 0;
 
-	LogAdd(LOG_BLUE, "[SoloDifficulty] Applied Mode: %s (EXP: %dx, ItemDrop: %d%%, Zen: %d%%, Monster: %.1fx)",
+	// Load appropriate shop item catalog (Classic vs FUN with top items/wings/kundun boxes)
+	bool isFun = (mode >= SOLO_DIFFICULTY_EASY_FUN && mode <= SOLO_DIFFICULTY_HARD_FUN);
+	gShopManager.LoadShop(isFun ? "ShopFun\\" : "Shop\\");
+	gShopManager.ReloadShopInterface();
+
+	LogAdd(LOG_BLUE, "[SoloDifficulty] Applied Mode: %s (EXP: %dx, ItemDrop: %d%%, Zen: %d%%, Monster: %.1fx, Shops: %s)",
 		SoloDifficulty_GetName(mode),
 		g_SoloDifficulty.expRate,
 		g_SoloDifficulty.itemDropRate,
 		g_SoloDifficulty.zenDropRate,
-		g_SoloDifficulty.monsterHpRate);
+		g_SoloDifficulty.monsterHpRate,
+		isFun ? "FUN (Top Gear/Wings/Boxes)" : "Classic");
 }
 
 SOLO_DIFFICULTY_CONFIG SoloDifficulty_Get()
@@ -108,9 +154,12 @@ const char* SoloDifficulty_GetName(SOLO_DIFFICULTY_MODE mode)
 {
 	switch (mode)
 	{
-		case SOLO_DIFFICULTY_EASY:   return "Easy";
-		case SOLO_DIFFICULTY_MEDIUM: return "Medium";
-		case SOLO_DIFFICULTY_HARD:   return "Hard";
-		default:                     return "Unknown";
+		case SOLO_DIFFICULTY_EASY:       return "Easy (Arcadia)";
+		case SOLO_DIFFICULTY_MEDIUM:     return "Medium (Valhalla)";
+		case SOLO_DIFFICULTY_HARD:       return "Hard (Asgard)";
+		case SOLO_DIFFICULTY_EASY_FUN:   return "Easy FUN (Elysium)";
+		case SOLO_DIFFICULTY_MEDIUM_FUN: return "Medium FUN (Olympus)";
+		case SOLO_DIFFICULTY_HARD_FUN:   return "Hard FUN (Atlantis)";
+		default:                         return "Unknown";
 	}
 }
