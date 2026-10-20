@@ -274,6 +274,40 @@ header.mu-topbar {
   }
 }
 
+/* Real Server External Link Button */
+.mu-btn-real-server {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.32);
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+.mu-btn-real-server:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.65);
+  color: #f0f9ff;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+  transform: translateY(-1px);
+}
+
+.mu-btn-real-server:active {
+  transform: translateY(0);
+}
+
+.mu-btn-icon-ext {
+  width: 11px;
+  height: 11px;
+  opacity: 0.65;
+  flex-shrink: 0;
+  margin-left: 1px;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.mu-btn-real-server:hover .mu-btn-icon-ext {
+  opacity: 1;
+  transform: translate(1px, -1px);
+}
+
 /* Floating Toast Notification */
 .mu-toast {
   position: fixed;
@@ -313,13 +347,17 @@ header.mu-topbar {
   .mu-btn-text {
     display: none;
   }
+  .mu-btn-icon-ext {
+    display: none;
+  }
   .mu-top-btn {
     padding: 0 8px;
   }
 }
 
 @media (max-width: 480px) {
-  .mu-realm-badge {
+  .mu-realm-badge,
+  .mu-topbar-left .mu-top-sep {
     display: none;
   }
 }

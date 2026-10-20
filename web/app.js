@@ -826,6 +826,22 @@ window.muInstallTopBar = function () {
     });
   }
 
+  // Google Analytics outbound tracking for Play Online link
+  var linkRealServer = document.getElementById('muLinkRealServer');
+  if (linkRealServer) {
+    linkRealServer.addEventListener('click', function () {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'play_online_click', {
+          event_category: 'engagement',
+          event_label: 'https://muonline.digitalsplace.com/',
+          link_url: 'https://muonline.digitalsplace.com/',
+          link_text: 'Play Online',
+          transport_type: 'beacon'
+        });
+      }
+    });
+  }
+
   document.addEventListener('fullscreenchange', window.muUpdateFsIcons);
   document.addEventListener('webkitfullscreenchange', window.muUpdateFsIcons);
 
