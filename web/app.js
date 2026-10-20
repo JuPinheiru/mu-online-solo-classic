@@ -4,6 +4,8 @@
  * ============================================================================
  */
 
+const BUILD_VERSION = window.BUILD_VERSION = 'login102';
+
 // ── 1. Virtual Touch Controls & On-Screen Keyboard ──────────────────────────
 
 window.muInstallKeys = function () {
@@ -348,8 +350,6 @@ window.muInstallAudio = function () {
       incomingQueue.push(bytes);
     }
   }
-
-  const BUILD_VERSION = 'login102';
 
   function initServerWorker(difficulty) {
     if (difficulty === undefined) difficulty = 0;
