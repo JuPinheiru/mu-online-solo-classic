@@ -831,10 +831,11 @@ window.muInstallTopBar = function () {
   if (linkRealServer) {
     linkRealServer.addEventListener('click', function () {
       if (typeof window.gtag === 'function') {
+        var targetUrl = linkRealServer.href || 'https://muonline.digitalsplace.com/?utm_source=solo-classic&utm_medium=referral&utm_campaign=play-online&utm_content=topbar';
         window.gtag('event', 'play_online_click', {
           event_category: 'engagement',
-          event_label: 'https://muonline.digitalsplace.com/',
-          link_url: 'https://muonline.digitalsplace.com/',
+          event_label: targetUrl,
+          link_url: targetUrl,
           link_text: 'Play Online',
           transport_type: 'beacon'
         });
