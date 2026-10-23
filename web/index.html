@@ -13,6 +13,48 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>MU Online Solo Classic</title>
+    <script>
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var generalTitle = (params.get('title') || '').trim();
+          var htmlTitle = (params.get('html_title') || params.get('htmltitle') || params.get('html-title') || params.get('html title') || params.get('htmlTitle') || generalTitle).trim();
+          var preloaderTitle = (params.get('preloader') || params.get('preloader_title') || params.get('preloadertitle') || params.get('preloader-title') || generalTitle).trim();
+          var brandTitle = (params.get('brand') || params.get('brand_title') || params.get('brandTitle') || generalTitle).trim();
+
+          window.__muHtmlTitle = htmlTitle;
+          window.__muPreloaderTitle = preloaderTitle;
+          window.__muBrandTitle = brandTitle;
+
+          if (htmlTitle) {
+            document.title = htmlTitle;
+          }
+
+          var applyElements = function () {
+            if (preloaderTitle) {
+              var pEls = document.querySelectorAll('.mu-preloader-title, #mu-preloader-title');
+              for (var i = 0; i < pEls.length; i++) {
+                pEls[i].textContent = preloaderTitle;
+              }
+            }
+            if (brandTitle) {
+              var bEls = document.querySelectorAll('.mu-brand-title, #mu-brand-title');
+              for (var j = 0; j < bEls.length; j++) {
+                bEls[j].textContent = brandTitle;
+              }
+            }
+          };
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applyElements);
+          } else {
+            applyElements();
+          }
+        } catch (e) {
+          console.error('Error applying title params:', e);
+        }
+      })();
+    </script>
     <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=2">
@@ -32,6 +74,7 @@
         <!-- Strict Modern Title -->
         <div class="mu-title-section">
           <h1 class="mu-preloader-title">MU ONLINE</h1>
+          <script>if (window.__muPreloaderTitle) document.querySelector('.mu-preloader-title').textContent = window.__muPreloaderTitle;</script>
           <div class="mu-preloader-sub">SOLO CLASSIC 0.97K</div>
         </div>
 
@@ -64,6 +107,7 @@
       <div class="mu-topbar-left">
         <div class="mu-brand-box">
           <span class="mu-brand-title">MU ONLINE</span>
+          <script>if (window.__muBrandTitle) document.querySelector('.mu-brand-title').textContent = window.__muBrandTitle;</script>
           <span class="mu-brand-sep">/</span>
           <span class="mu-brand-desc">SOLO CLASSIC 0.97K</span>
         </div>

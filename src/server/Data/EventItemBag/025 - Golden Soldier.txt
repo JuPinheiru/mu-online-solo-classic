@@ -19,7 +19,8 @@ end
 
 2
 //Index	DropRate
-0	10000
+// Empty advanced row suppresses the box in section 1.
+//0	10000
 end
 
 3

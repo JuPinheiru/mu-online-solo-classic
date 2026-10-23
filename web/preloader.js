@@ -104,6 +104,16 @@
   var statusDetail = document.getElementById('muStatusDetail');
   var tipMsg = document.getElementById('muTipText');
 
+  // Apply custom title from GET parameter if present
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var pTitleVal = (params.get('preloader') || params.get('preloader_title') || params.get('preloadertitle') || params.get('preloader-title') || params.get('title') || '').trim();
+    if (pTitleVal) {
+      var pTitle = document.querySelector('.mu-preloader-title');
+      if (pTitle) pTitle.textContent = pTitleVal;
+    }
+  } catch (e) {}
+
   var muTips = [
     "Use hotkeys Q, W, E to quickly drink Health and Mana potions.",
     "Press I or V to open Inventory, and C to view Character stats.",

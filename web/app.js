@@ -730,7 +730,36 @@ window.muCloseInfoModal = function () {
   modal.setAttribute('aria-hidden', 'true');
 };
 
+window.muApplyTitleParam = function () {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var generalTitle = (params.get('title') || '').trim();
+    var htmlTitle = (params.get('html_title') || params.get('htmltitle') || params.get('html-title') || params.get('html title') || params.get('htmlTitle') || generalTitle).trim();
+    var preloaderTitle = (params.get('preloader') || params.get('preloader_title') || params.get('preloadertitle') || params.get('preloader-title') || generalTitle).trim();
+    var brandTitle = (params.get('brand') || params.get('brand_title') || params.get('brandTitle') || generalTitle).trim();
+
+    if (htmlTitle) {
+      document.title = htmlTitle;
+    }
+    if (preloaderTitle) {
+      var pEls = document.querySelectorAll('.mu-preloader-title, #mu-preloader-title');
+      for (var i = 0; i < pEls.length; i++) {
+        pEls[i].textContent = preloaderTitle;
+      }
+    }
+    if (brandTitle) {
+      var bEls = document.querySelectorAll('.mu-brand-title, #mu-brand-title');
+      for (var j = 0; j < bEls.length; j++) {
+        bEls[j].textContent = brandTitle;
+      }
+    }
+  } catch (e) {
+    console.error('Failed to apply title params:', e);
+  }
+};
+
 window.muInstallTopBar = function () {
+  window.muApplyTitleParam();
   if (window._muTopBarInstalled) return;
   window._muTopBarInstalled = true;
 
